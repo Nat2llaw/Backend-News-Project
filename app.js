@@ -1,11 +1,13 @@
 const express = require("express");
-const { getTopics, getArticlesById } = require("./db/controller/controller");
+const { getTopics, getArticlesById, getUsers } = require("./db/controller/controller");
 const app = express();
 app.use(express.json());
 
 app.get("/api/topics", getTopics)
 
 app.get("/api/articles/:article_id", getArticlesById)
+
+app.get("/api/users", getUsers);
 
 app.use((err, req, res, next) => {
   if (err.status) {

@@ -50,3 +50,22 @@ describe("GET/api/articles/:article_id", () => {
       });
   });
 });
+
+describe("GET/api/users", () => {
+  test("200: return users", () => {
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then(({ body }) => {
+        expect.objectContaining({ body });
+      });
+  });
+  test("404: mispelt endpoint", () => {
+    return request(app)
+      .get("/api/user")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body).toEqual({});
+      });
+  });
+});
