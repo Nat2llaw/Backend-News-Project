@@ -45,7 +45,6 @@ describe("GET/api/articles/:article_id", () => {
       .get("/api/articles/1123")
       .expect(404)
         .then(({ body }) => {
-          console.log(body)
         expect.objectContaining(body);
       });
   });
