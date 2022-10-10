@@ -26,7 +26,7 @@ describe("GET/api/topics", () => {
       .get("/api/tpics")
       .expect(404)
       .then(({ body }) => {
-          expect(body).toEqual({});
+      expect.objectContaining({body});
       });
   });
 });
