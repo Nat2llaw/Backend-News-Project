@@ -17,16 +17,24 @@ describe("GET/api/topics", () => {
     return request(app)
       .get("/api/topics")
       .expect(200)
-      .then(({ body }) => {
-        expect.objectContaining({ body });
+      .then(({ body: topics }) => {
+        expect(topics).toHaveLength(3);
+        topics.forEach((topics) => {
+          expect(topics).toEqual(
+            expect.objectContaining({
+              slug: expect.any(String),
+              description: expect.any(String),
+            })
+          );
+        });
       });
   });
   test("404: mispelt endpoint", () => {
     return request(app)
       .get("/api/tpics")
       .expect(404)
-      .then(({ body }) => {
-        expect(body).toEqual({});
+      .then(({ body:tpics }) => {
+        expect(tpics).toEqual({});
       });
   });
 });
@@ -36,16 +44,30 @@ describe("GET/api/articles/:article_id", () => {
     return request(app)
       .get("/api/articles/1")
       .expect(200)
-      .then(({ body }) => {
-        expect.objectContaining(body);
+      .then(({ body: article }) => {
+        console.log(article)
+        expect(article).toHaveLength(1);
+        article.forEach((article) => {
+          expect(article).toEqual(
+            expect.objectContaining({
+              article_id: expect.any(Number),
+              title: expect.any(String),
+              topic: expect.any(String),
+              author: expect.any(String),
+              body: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number)
+            })
+          );
+        });
       });
   });
   test("400:article id not in database", () => {
     return request(app)
       .get("/api/articles/1123")
       .expect(400)
-        .then(({ body }) => {
-          expect(body).toEqual({});
+        .then(({ body:article }) => {
+          expect(article).toEqual({});
       });
   });
 });
