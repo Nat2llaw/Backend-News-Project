@@ -45,7 +45,7 @@ describe("GET/api/articles/:article_id", () => {
       .get("/api/articles/1123")
       .expect(404)
         .then(({ body }) => {
-        expect.objectContaining(body);
+          expect(body).toEqual({});
       });
   });
 });
