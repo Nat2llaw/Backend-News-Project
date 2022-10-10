@@ -40,10 +40,10 @@ describe("GET/api/articles/:article_id", () => {
         expect.objectContaining(body);
       });
   });
-  test("404:article id not in database", () => {
+  test("400:article id not in database", () => {
     return request(app)
       .get("/api/articles/1123")
-      .expect(404)
+      .expect(400)
         .then(({ body }) => {
           expect(body).toEqual({});
       });
