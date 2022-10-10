@@ -12,7 +12,11 @@ exports.getTopics = (req, res, next) => {
 exports.getArticlesById = (req, res, next) => {
     const id = req.params.article_id
     fetchArcticlesById(id).then((article) => {
-        res.status(200).send(article)
+        if (article.length === 0) {
+            res.status(404).send("No such article id")
+        } else {
+            res.status(200).send(article)
+        }
     })
         .catch((err) => {
             next(err)

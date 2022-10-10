@@ -26,7 +26,7 @@ describe("GET/api/topics", () => {
       .get("/api/tpics")
       .expect(404)
       .then(({ body }) => {
-          expect(body).toEqual({});
+        expect(body).toEqual({});
       });
   });
 });
@@ -36,6 +36,14 @@ describe("GET/api/articles/:article_id", () => {
     return request(app)
       .get("/api/articles/1")
       .expect(200)
+      .then(({ body }) => {
+        expect.objectContaining(body);
+      });
+  });
+  test("404:article id not in database", () => {
+    return request(app)
+      .get("/api/articles/1123")
+      .expect(404)
         .then(({ body }) => {
           console.log(body)
         expect.objectContaining(body);
