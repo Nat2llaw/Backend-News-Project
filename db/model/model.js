@@ -20,3 +20,13 @@ exports.fetchUsers = () => {
       return rows;
     });
 };
+
+exports.updateVotes = (id, voteCount) => {
+    console.log(id)
+    console.log(voteCount)
+    return db
+        .query(`UPDATE articles SET votes=$2 WHERE article_id=$1`, [id, voteCount])
+        .then(({ rows }) => {
+            return rows;
+    })
+}

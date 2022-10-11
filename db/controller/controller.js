@@ -2,30 +2,33 @@ const {
   fetchTopics,
   fetchArcticlesById,
   fetchUsers,
+  updateVotes,
 } = require("../model/model");
 
 exports.getTopics = (req, res, next) => {
-    fetchTopics().then((topics) => {
-        res.status(200).send(topics)
-    })
-        .catch((err) => {
-            next(err)
-        })
-}
+    fetchTopics()
+      .then((topic) => {
+        res.status(200).send(topic);
+      })
+      .catch((err) => {
+      next(err);
+    });
+};
 
 exports.getArticlesById = (req, res, next) => {
-    const id = req.params.article_id
-    fetchArcticlesById(id).then((article) => {
-        if (article.length === 0) {
-            res.status(404).send("No such article id")
-        } else {
-            res.status(200).send(article)
-        }
+  const id = req.params.article_id;
+  fetchArcticlesById(id)
+    .then((article) => {
+      if (article.length === 0) {
+        res.status(404).send({ msg: "no such article id" });
+      } else {
+        res.status(200).send(article);
+      }
     })
-        .catch((err) => {
-            next(err)
-    })
-}
+    .catch((err) => {
+      next(err);
+    });
+};
 
 exports.getUsers = (req, res, next) => {
   fetchUsers()
@@ -36,3 +39,13 @@ exports.getUsers = (req, res, next) => {
       next(err);
     });
 };
+
+exports.patchVotes = (res, req, next) => {
+  updateVotes(res.params, res.body.inc_votes).then((article) =>
+  {
+    res.status(203).send({article})
+  })
+    .catch((err) => {
+      next(err)
+    })
+}

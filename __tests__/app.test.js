@@ -33,8 +33,8 @@ describe("GET/api/topics", () => {
     return request(app)
       .get("/api/tpics")
       .expect(404)
-      .then(({ body:tpics }) => {
-        expect(tpics).toEqual({});
+      .then(({ misspeltTopic }) => {
+        expect(misspeltTopic).toEqual(undefined);
       });
   });
 });
@@ -45,7 +45,6 @@ describe("GET/api/articles/:article_id", () => {
       .get("/api/articles/1")
       .expect(200)
       .then(({ body: article }) => {
-        console.log(article)
         expect(article).toHaveLength(1);
         article.forEach((article) => {
           expect(article).toEqual(
@@ -66,8 +65,8 @@ describe("GET/api/articles/:article_id", () => {
     return request(app)
       .get("/api/articles/1123")
       .expect(404)
-        .then(({ body:article }) => {
-          expect(article).toEqual({});
+      .then(({ body: article }) => {
+        expect(article).toEqual({ msg: "no such article id" });
       });
   });
 });
@@ -78,7 +77,6 @@ describe("GET/api/users/", () => {
       .get("/api/users")
       .expect(200)
       .then(({ body: users }) => {
-        console.log(users)
         expect(users).toHaveLength(4);
         users.forEach((users) => {
           expect(users).toEqual(
@@ -91,4 +89,37 @@ describe("GET/api/users/", () => {
         });
       });
   });
+  test("404: mispelt endpoint", () => {
+    return request(app)
+      .get("/api/user")
+      .expect(404)
+      .then(({ misspeltUsers }) => {
+        expect(misspeltUsers).toEqual(undefined);
+      });
+  });
 });
+
+// describe.only("GET/api/articles/:article_id", () => {
+//   test("200: return article by id with increased vote value", () => {
+//     return request(app)
+//       .get("/api/articles/1")
+//       .send({ inc_votes: 10 })
+//       .expect(200)
+//       .then(({ body: article }) => {
+//         console.log(article)
+//         expect(article).toHaveLength(1);
+//         article.forEach((article) => {
+//           expect(article).toEqual(
+//             {
+//               article_id: 1,
+//               title: 'Living in the shadow of a great man',
+//               topic: 'mitch',
+//               author: 'butter_bridge',
+//               body: 'I find this existence challenging',
+//               created_at: '2020-07-09T20:11:00.000Z',
+//               votes: 110
+//             })
+//         });
+//       });
+//   });
+// })

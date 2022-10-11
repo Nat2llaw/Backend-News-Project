@@ -1,5 +1,10 @@
 const express = require("express");
-const { getTopics, getArticlesById, getUsers } = require("./db/controller/controller");
+const {
+  getTopics,
+  getArticlesById,
+  getUsers,
+  patchVotes,
+} = require("./db/controller/controller");
 const app = express();
 app.use(express.json());
 
@@ -9,16 +14,18 @@ app.get("/api/articles/:article_id", getArticlesById)
 
 app.get("/api/users", getUsers);
 
-app.use((err, req, res, next) => {
-  if (err.status) {
-    res.status(err.status).send({ msg: err.msg });
-  } else {
-    next(err);
-  }
-});
+app.patch("/api/articles/:article_id", patchVotes)
 
 app.use((err, req, res, next) => {
-  res.status(500).send({ msg: "something went wrong" });
+  if (err.status && err.msg) {
+    res.status(err.status).send({ msg: err.msg });
+  }
+  else if (err.code === "22P02") {
+    res.status(400).send({ msg: "Bad Request" });
+  } else {
+    console.log(err);
+    res.status(500).send({ msg: "Something went wrong" });
+  }
 });
 
 module.exports = app
