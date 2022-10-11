@@ -9,6 +9,28 @@ exports.fetchTopics = () => {
 
 exports.fetchArcticlesById = (id) => {
     return db.query(`SELECT * FROM articles WHERE article_id=$1`, [id]).then(({ rows }) => {
+        if (rows.length === 0) {
+            return Promise.reject({status: 400, msg: 'Id not found'})
+        }
         return rows
+    })
+}
+
+exports.fetchUsers = () => {
+  return db
+    .query(`SELECT * FROM users`)
+    .then(({ rows }) => {
+      return rows;
+    });
+};
+
+exports.updateVotes = (id, increaseBy) => {
+    console.log(id)
+    console.log(increaseBy)
+    return db
+        .query(`UPDATE articles SET votes=votes+$2 WHERE article_id=$1 RETURNING *`, [id, increaseBy])
+        .then(({ rows: [article] }) => {
+            console.log(article)
+            return article;
     })
 }
