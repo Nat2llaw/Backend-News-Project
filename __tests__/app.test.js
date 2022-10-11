@@ -84,13 +84,30 @@ describe("/api/articles/:article_id", () => {
             });
           });
       });
+      test("400: inc_votes is not a number", () => {
+        return request(app)
+          .patch("/api/articles/1")
+          .send({ inc_votes: "banana" })
+          .expect(400)
+          .then(({ body }) => {
+            expect(body.msg).toBe("Bad Request")
+          })
+      })
     });
-    test("400:article id not in database", () => {
+    test("400: article id not in database", () => {
       return request(app)
         .get("/api/articles/1123")
         .expect(400)
         .then(({ body }) => {
           expect(body.msg).toBe("Id not found");
+        });
+    });
+    test("400: wrong type of data", () => {
+      return request(app)
+        .get("/api/articles/banana")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Bad Request");
         });
     });
   });
@@ -114,7 +131,7 @@ describe("GET/api/users/", () => {
         });
       })
   })
-  test("400:article id not in database", () => {
+  test("400: article id not in database", () => {
     return request(app)
       .get("/api/articles/1123")
       .expect(400)
