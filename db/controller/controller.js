@@ -36,10 +36,12 @@ exports.getUsers = (req, res, next) => {
     });
 };
 
-exports.patchVotes = (res, req, next) => {
-  updateVotes(res.params, res.body.inc_votes)
+exports.patchVotes = (req, res, next) => {
+  const id = req.params.article_id;
+  const increaseBy = req.body.inc_votes;
+  updateVotes(id, increaseBy)
     .then((article) => {
-      res.status(203).send({ article });
+      res.status(200).send({ article });
     })
     .catch((err) => {
       next(err);

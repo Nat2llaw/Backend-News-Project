@@ -16,6 +16,10 @@ app.get("/api/users", getUsers);
 
 app.patch("/api/articles/:article_id", patchVotes)
 
+app.all("*", (req ,res) => {
+  res.status(404).send({msg: "path not found"})
+})
+
 app.use((err, req, res, next) => {
   if (err.status) {
     res.status(err.status).send({ msg: err.msg });
