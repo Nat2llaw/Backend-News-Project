@@ -33,8 +33,8 @@ describe("GET/api/topics", () => {
     return request(app)
       .get("/api/tpics")
       .expect(404)
-      .then(({ misspeltTopic }) => {
-        expect(misspeltTopic).toEqual(undefined);
+      .then(({ body }) => {
+        expect(body).toEqual({});
       });
   });
 });
@@ -64,9 +64,9 @@ describe("GET/api/articles/:article_id", () => {
   test("400:article id not in database", () => {
     return request(app)
       .get("/api/articles/1123")
-      .expect(404)
-      .then(({ body: article }) => {
-        expect(article).toEqual({ msg: "no such article id" });
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Id not found" );
       });
   });
 });

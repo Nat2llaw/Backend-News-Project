@@ -17,7 +17,7 @@ app.get("/api/users", getUsers);
 app.patch("/api/articles/:article_id", patchVotes)
 
 app.use((err, req, res, next) => {
-  if (err.status && err.msg) {
+  if (err.status) {
     res.status(err.status).send({ msg: err.msg });
   }
   else if (err.code === "22P02") {
