@@ -25,12 +25,9 @@ exports.fetchUsers = () => {
 };
 
 exports.updateVotes = (id, increaseBy) => {
-    console.log(id)
-    console.log(increaseBy)
     return db
         .query(`UPDATE articles SET votes=votes+$2 WHERE article_id=$1 RETURNING *`, [id, increaseBy])
         .then(({ rows: [article] }) => {
-            console.log(article)
             return article;
     })
 }

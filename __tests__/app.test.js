@@ -73,7 +73,6 @@ describe("/api/articles/:article_id", () => {
           .send({ inc_votes: 10 })
           .expect(200)
           .then(({ body: { article } }) => {
-            console.log(article);
             expect(article).toEqual({
               article_id: 1,
               title: "Living in the shadow of a great man",
@@ -120,7 +119,7 @@ describe("GET/api/users/", () => {
       .get("/api/articles/1123")
       .expect(400)
         .then(({ body:article }) => {
-          expect(article).toEqual({});
+          expect(article).toEqual({msg: "Id not found"});
       });
   });
 });
