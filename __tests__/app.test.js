@@ -113,6 +113,12 @@ describe("GET/api/users/", () => {
             })
           );
         });
+  test("400:article id not in database", () => {
+    return request(app)
+      .get("/api/articles/1123")
+      .expect(400)
+        .then(({ body:article }) => {
+          expect(article).toEqual({});
       });
   });
 });
