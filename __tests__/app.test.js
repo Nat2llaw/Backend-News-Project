@@ -49,7 +49,8 @@ describe("/api/articles/:article_id", () => {
         return request(app)
           .get("/api/articles/1")
           .expect(200)
-          .then(({ body: [ article ] }) => {
+          .then(({ body: [article] }) => {
+            console.log(article)
             expect(article).toEqual({
               article_id: 1,
               title: "Living in the shadow of a great man",
@@ -58,7 +59,7 @@ describe("/api/articles/:article_id", () => {
               body: "I find this existence challenging",
               created_at: "2020-07-09T20:11:00.000Z",
               votes: 100,
-              comment_count: 11,
+              comment_count: "11",
             });
           });
       });
@@ -127,12 +128,4 @@ describe("GET/api/users/", () => {
         });
       })
   })
-  test("400: article id not in database", () => {
-    return request(app)
-      .get("/api/articles/1123")
-      .expect(400)
-        .then(({ body:article }) => {
-          expect(article).toEqual({msg: "Id not found"});
-      });
-  });
-});
+})
