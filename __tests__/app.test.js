@@ -42,35 +42,58 @@ describe("check for correct pathing", () => {
   });
 })
 
-describe("GET/api/articles/:article_id", () => {
-  test("200: return article by id", () => {
-    return request(app)
-      .get("/api/articles/1")
-      .expect(200)
-      .then(({ body: article }) => {
-        expect(article).toHaveLength(1);
-        article.forEach((article) => {
-          expect(article).toEqual(
-            expect.objectContaining({
-              article_id: 1,
-              title: expect.any(String),
-              topic: expect.any(String),
-              author: expect.any(String),
-              body: expect.any(String),
-              created_at: expect.any(String),
-              votes: expect.any(Number)
-            })
-          );
+describe("/api/articles/:article_id", () => {
+
+  describe("GET/api/articles/:article_id", () => {
+    test("200: return article by id", () => {
+      return request(app)
+        .get("/api/articles/1")
+        .expect(200)
+        .then(({ body: article }) => {
+          expect(article).toHaveLength(1);
+          article.forEach((article) => {
+            expect(article).toEqual(
+              expect.objectContaining({
+                article_id: 1,
+                title: expect.any(String),
+                topic: expect.any(String),
+                author: expect.any(String),
+                body: expect.any(String),
+                created_at: expect.any(String),
+                votes: expect.any(Number),
+              })
+            );
+          });
         });
+    });
+    describe("PATCH/api/articles/:article_id", () => {
+      test("200: return article by id with increased vote value", () => {
+        return request(app)
+          .patch("/api/articles/1")
+          .send({ inc_votes: 10 })
+          .expect(200)
+          .then(({ body: { article } }) => {
+            console.log(article);
+            expect(article).toEqual({
+              article_id: 1,
+              title: "Living in the shadow of a great man",
+              topic: "mitch",
+              author: "butter_bridge",
+              body: "I find this existence challenging",
+              created_at: "2020-07-09T20:11:00.000Z",
+              votes: 110,
+            });
+          });
       });
-  });
-  test("400:article id not in database", () => {
-    return request(app)
-      .get("/api/articles/1123")
-      .expect(400)
-      .then(({ body }) => {
-        expect(body.msg).toBe("Id not found" );
-      });
+    });
+    test("400:article id not in database", () => {
+      return request(app)
+        .get("/api/articles/1123")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Id not found");
+        });
+    });
   });
 });
 
@@ -93,25 +116,3 @@ describe("GET/api/users/", () => {
       });
   });
 });
-
-describe("GET/api/articles/:article_id", () => {
-  test("200: return article by id with increased vote value", () => {
-    return request(app)
-      .patch("/api/articles/1")
-      .send({ inc_votes: 10 })
-      .expect(200)
-      .then(({ body: { article } }) => {
-        console.log(article)
-        expect(article).toEqual(
-            {
-              article_id: 1,
-              title: 'Living in the shadow of a great man',
-              topic: 'mitch',
-              author: 'butter_bridge',
-              body: 'I find this existence challenging',
-              created_at: '2020-07-09T20:11:00.000Z',
-              votes: 110
-            })
-      });
-  });
-})
