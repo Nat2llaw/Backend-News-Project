@@ -3,13 +3,13 @@ const {
   getTopics,
   getArticlesById,
   getUsers,
-  patchVotes
+  patchVotes,
+  getAllArticles,
 } = require("./db/controller/controller");
 const app = express();
 app.use(express.json());
 
 app.get("/api/topics", getTopics)
-
 
 app.get("/api/articles/:article_id", getArticlesById)
 

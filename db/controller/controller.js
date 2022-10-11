@@ -2,7 +2,8 @@ const {
   fetchTopics,
   fetchArcticlesById,
   fetchUsers,
-  updateVotes
+  updateVotes,
+  fetchAllArticles,
 } = require("../model/model");
 
 exports.getTopics = (req, res, next) => {
