@@ -164,21 +164,6 @@ describe("/api/articles/:article_id/comments", () => {
         });
     });
   })
-//   describe(" POST/api/articles/:article_id/comments", () => {
-//     test("200: return comments with relevent article id", () => {
-//       return request(app)
-//         .post("/api/articles/1/comments")
-//         .send({username:"Bob the Builder", body: "Can he fix it?"})
-//         .expect(201)
-//         .then(({ body: comments }) => {
-//           expect(comments).toBe({
-//             author: "Bob the Builder",
-//             body: "Can he fix it?",
-//             article_id: 1
-//           });
-//         });
-//     });;
-//   });
 })
 describe("GET/api/articles?topic=mitch", () => {
   test("200: return all the articles with topic mitch sort by date descending", () => {
