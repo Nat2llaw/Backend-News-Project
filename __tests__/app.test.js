@@ -192,7 +192,7 @@ describe("/api/articles/:article_id/comments", () => {
         .send({ username: "bob the builder", body: "Can he fix it?" })
         .expect(400)
         .then(({ body: comments }) => {
-          expect(comments.msg).toEqual("Create Account to Comment");
+          expect(comments.msg).toEqual("Create an account to comment");
         });
     });
   });

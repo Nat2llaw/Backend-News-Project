@@ -37,7 +37,7 @@ app.use((err, req, res, next) => {
   } else if (err.code === "22P02") {
     res.status(400).send({ msg: "Bad Request" });
   } else if (err.code === "23503") {
-    res.status(400).send({ msg: "Create Account to Comment" });
+    res.status(400).send({ msg: "Create an account to comment" });
   } else {
     console.log(err);
     res.status(500).send({ msg: "Something went wrong" });
