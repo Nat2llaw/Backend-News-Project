@@ -8,38 +8,33 @@ exports.fetchTopics = () => {
 };
 
 exports.fetchArcticlesById = (id) => {
-  return db
-    .query(`ALTER TABLE articles ADD comment_count INT NOT NULL DEFAULT 0 `)
-    .then(() => {
-      return db.query(
-        `UPDATE articles SET comment_count=(SELECT COUNT(*)
-           FROM comments WHERE article_id=$1);`,
+  return (
+    db
+      .query(
+        `SELECT articles.*, (SELECT COUNT(*)
+            FROM comments WHERE article_id=$1) AS comment_count
+            FROM articles
+            LEFT JOIN comments ON articles.article_id=comments.article_id WHERE articles.article_id=$1`,
         [id]
-      );
-    })
-    .then(() => {
-      return db.query(`SELECT * FROM articles WHERE article_id=$1`, [id]);
-    })
-    .then(({ rows }) => {
-      if (rows.length === 0) {
-        return Promise.reject({ status: 400, msg: "Id not found" });
-      }
-      return rows;
-    });
+      )
+      .then(({ rows }) => {
+        if (rows.length === 0) {
+          return Promise.reject({ status: 400, msg: "Id not found" });
+        }
+        return rows;
+      })
+  );
 };
 
 exports.fetchAllArticles = () => {
   return db
-    .query(`ALTER TABLE articles ADD comment_count INT NOT NULL DEFAULT 0 `)
-    .then(() => {
-      return db.query(
-        `UPDATE articles SET comment_count=(SELECT COUNT(*)
-        FROM comments WHERE article_id=articles.article_id);`
-      );
-    })
-    .then(() => {
-        return db.query(`SELECT * FROM articles ORDER BY created_at DESC`);
-    })
+    .query(
+      `SELECT articles.*, (SELECT COUNT(*)
+            FROM comments WHERE articles.article_id=comments.article_id) AS comment_count
+            FROM articles
+            LEFT JOIN comments ON articles.article_id=comments.article_id
+            ORDER BY created_at DESC`
+    )
     .then(({ rows }) => {
       return rows;
     });

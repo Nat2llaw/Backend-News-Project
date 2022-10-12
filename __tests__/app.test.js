@@ -49,7 +49,7 @@ describe("GET/api/articles", () => {
       .expect(200)
       .then(({ body: article }) => {
         console.log(article)
-        expect(article).toHaveLength(12);
+        expect(article).toHaveLength(25);
         article.forEach((article) => {
           expect(article).toEqual(
             expect.objectContaining({
@@ -60,7 +60,7 @@ describe("GET/api/articles", () => {
               body: expect.any(String),
               created_at: expect.any(String),
               votes: expect.any(Number),
-              comment_count: expect.any(Number),
+              comment_count: expect.any(String),
             })
           );
         })   
@@ -84,7 +84,7 @@ describe("/api/articles/:article_id", () => {
               body: "I find this existence challenging",
               created_at: "2020-07-09T20:11:00.000Z",
               votes: 100,
-              comment_count: 11,
+              comment_count: '11',
             });
           });
       });
