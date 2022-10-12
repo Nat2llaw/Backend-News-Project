@@ -23,7 +23,9 @@ app.post("/api/articles/:article_id/comments", postComment);
 
 app.get("/api/articles", getAllArticles);
 
-app.get("/api/articles?topic=mitch", getAllArticles);
+app.get("/api/articles?topics=mitch", getAllArticles);
+
+app.get("/api/articles?sort_by=author&order=ASC", getAllArticles);
 
 app.patch("/api/articles/:article_id", patchVotes);
 
