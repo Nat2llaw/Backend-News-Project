@@ -4,6 +4,7 @@ const {
   fetchUsers,
   updateVotes,
   fetchAllArticles,
+  fetchCommentsById,
 } = require("../model/model");
 
 exports.getTopics = (req, res, next) => {
@@ -27,8 +28,18 @@ exports.getArticlesById = (req, res, next) => {
     });
 };
 
+exports.getCommentsById = (req, res, next) => {
+  const id = req.params.article_id;
+  fetchCommentsById(id)
+    .then((article) => {
+      res.status(200).send(article);
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
 exports.getAllArticles = (req, res, next) => {
-  console.log(req.query.topic)
   const topicQuery = req.query.topic;
   fetchAllArticles(topicQuery)
     .then((all) => {

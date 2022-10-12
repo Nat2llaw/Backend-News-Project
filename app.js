@@ -5,6 +5,7 @@ const {
   getUsers,
   patchVotes,
   getAllArticles,
+  getCommentsById,
 } = require("./db/controller/controller");
 const app = express();
 app.use(express.json());
@@ -15,11 +16,13 @@ app.get("/api/users", getUsers);
 
 app.get("/api/articles/:article_id", getArticlesById)
 
-app.patch("/api/articles/:article_id", patchVotes)
+app.get("/api/articles/:article_id/comments", getCommentsById)
 
 app.get("/api/articles", getAllArticles);
 
 app.get("/api/articles?topic=mitch", getAllArticles);
+
+app.patch("/api/articles/:article_id", patchVotes)
 
 
 app.all("*", (req ,res) => {
