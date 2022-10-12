@@ -41,6 +41,16 @@ exports.fetchCommentsById = (id) => {
     });
 };
 
+exports.addNewComment = (id, newComment) => {
+  return db.query(
+    `INSERT INTO comments (author, body, article_id) VALUES ($1,$2,$3)`,
+    [newComment.username, newComment.body, id]
+  )
+    .then(({ rows: [comment] }) => {
+    return comment
+  })
+}
+
 exports.fetchAllArticles = (topicQuery) => {
   if (topicQuery === undefined) {
     return db

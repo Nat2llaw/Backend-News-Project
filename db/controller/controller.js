@@ -5,6 +5,7 @@ const {
   updateVotes,
   fetchAllArticles,
   fetchCommentsById,
+  addNewComment,
 } = require("../model/model");
 
 exports.getTopics = (req, res, next) => {
@@ -38,6 +39,18 @@ exports.getCommentsById = (req, res, next) => {
       next(err);
     });
 };
+
+exports.postComment = (req, res, next) => {
+  const newComment = req.body;
+  const id = req.params.article_id
+  addNewComment(id, newComment)
+    .then((comment) => {
+      res.status(201).send(comment);
+    })
+    .catch((err) => {
+      next(err);
+    });
+}
 
 exports.getAllArticles = (req, res, next) => {
   const topicQuery = req.query.topic;
