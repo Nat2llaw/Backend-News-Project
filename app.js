@@ -6,34 +6,35 @@ const {
   patchVotes,
   getAllArticles,
   getCommentsById,
+  postComment,
 } = require("./db/controller/controller");
 const app = express();
 app.use(express.json());
 
-app.get("/api/topics", getTopics)
+app.get("/api/topics", getTopics);
 
 app.get("/api/users", getUsers);
 
-app.get("/api/articles/:article_id", getArticlesById)
+app.get("/api/articles/:article_id", getArticlesById);
 
-app.get("/api/articles/:article_id/comments", getCommentsById)
+app.get("/api/articles/:article_id/comments", getCommentsById);
+
+app.post("/api/articles/:article_id/comments", postComment);
 
 app.get("/api/articles", getAllArticles);
 
 app.get("/api/articles?topic=mitch", getAllArticles);
 
-app.patch("/api/articles/:article_id", patchVotes)
+app.patch("/api/articles/:article_id", patchVotes);
 
-
-app.all("*", (req ,res) => {
-  res.status(404).send({msg: "path not found"})
-})
+app.all("*", (req, res) => {
+  res.status(404).send({ msg: "path not found" });
+});
 
 app.use((err, req, res, next) => {
   if (err.status) {
     res.status(err.status).send({ msg: err.msg });
-  }
-  else if (err.code === "22P02") {
+  } else if (err.code === "22P02") {
     res.status(400).send({ msg: "Bad Request" });
   } else {
     console.log(err);
@@ -41,4 +42,4 @@ app.use((err, req, res, next) => {
   }
 });
 
-module.exports = app
+module.exports = app;

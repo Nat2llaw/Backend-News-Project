@@ -33,11 +33,22 @@ exports.fetchCommentsById = (id) => {
       ORDER BY created_at DESC`,
       [id]
     )
-    .then(( {rows} ) => {
+    .then(({ rows }) => {
       if (rows.length === 0) {
         return Promise.reject({ status: 400, msg: "Id not found" });
       }
       return rows;
+    });
+};
+
+exports.addNewComment = (id, newComment) => {
+  return db
+    .query(
+      `INSERT INTO comments (author, body, article_id) VALUES ($1,$2,$3)`,
+      [newComment.username, newComment.body, id]
+    )
+    .then(({ rows: [comment] }) => {
+      return comment;
     });
 };
 
