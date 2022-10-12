@@ -11,11 +11,16 @@ app.use(express.json());
 
 app.get("/api/topics", getTopics)
 
-app.get("/api/articles/:article_id", getArticlesById)
-
 app.get("/api/users", getUsers);
 
+app.get("/api/articles/:article_id", getArticlesById)
+
 app.patch("/api/articles/:article_id", patchVotes)
+
+app.get("/api/articles", getAllArticles);
+
+app.get("/api/articles?topic=mitch", getAllArticles);
+
 
 app.all("*", (req ,res) => {
   res.status(404).send({msg: "path not found"})

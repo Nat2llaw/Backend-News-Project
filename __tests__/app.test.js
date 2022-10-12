@@ -42,6 +42,67 @@ describe("check for correct pathing", () => {
   });
 })
 
+describe("GET/api/articles", () => {
+  test("200: return all the articles sort by date descending", () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then(({ body: article }) => {
+        expect(article).toHaveLength(25);
+        article.forEach((article) => {
+          expect(article).toEqual(
+            expect.objectContaining({
+              article_id: expect.any(Number),
+              title: expect.any(String),
+              topic: expect.any(String),
+              author: expect.any(String),
+              body: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+              comment_count: expect.any(Number),
+            })
+          );
+        })   
+      });
+  });
+});
+
+describe("GET/api/articles?topic=mitch", () => {
+  test("200: return all the articles with topic mitch sort by date descending", () => {
+    return request(app)
+      .get("/api/articles?topic=mitch")
+      .expect(200)
+      .then(({ body: article }) => {
+        expect(article).toHaveLength(23);
+        article.forEach((article) => {
+          expect(article).toEqual(
+            expect.objectContaining({
+              article_id: expect.any(Number),
+              title: expect.any(String),
+              topic: expect.any(String),
+              author: expect.any(String),
+              body: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+              comment_count: expect.any(Number),
+            })
+          );
+        });
+      });
+  });
+});
+
+describe("GET/api/articles?topic=banana", () => {
+  test("200: return all the articles with topic mitch sort by date descending", () => {
+    return request(app)
+      .get("/api/articles?topic=banana")
+      .expect(400)
+      .then(({ body: article }) => {
+        expect(article.msg).toBe("Query not valid");
+      });
+  });
+});
+
 describe("/api/articles/:article_id", () => {
     
   describe("GET/api/articles/:article_id", () => {
@@ -49,8 +110,7 @@ describe("/api/articles/:article_id", () => {
         return request(app)
           .get("/api/articles/1")
           .expect(200)
-          .then(({ body: [article] }) => {
-            console.log(article)
+          .then(({ body: article }) => {
             expect(article).toEqual({
               article_id: 1,
               title: "Living in the shadow of a great man",

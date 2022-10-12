@@ -27,6 +27,18 @@ exports.getArticlesById = (req, res, next) => {
     });
 };
 
+exports.getAllArticles = (req, res, next) => {
+  console.log(req.query.topic)
+  const topicQuery = req.query.topic;
+  fetchAllArticles(topicQuery)
+    .then((all) => {
+      res.status(200).send(all);
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
 exports.getUsers = (req, res, next) => {
   fetchUsers()
     .then((users) => {
