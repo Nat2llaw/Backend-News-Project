@@ -53,6 +53,9 @@ exports.fetchAllArticles = (topicQuery) => {
             [topicQuery]
       )
       .then(({ rows }) => {
+        if (rows.length === 0) {
+          return Promise.reject({ status: 400, msg: "Query not valid" });
+        }
         return rows;
       });
   }

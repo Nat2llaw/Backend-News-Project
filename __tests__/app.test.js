@@ -66,6 +66,7 @@ describe("GET/api/articles", () => {
       });
   });
 });
+
 describe("GET/api/articles?topic=mitch", () => {
   test("200: return all the articles with topic mitch sort by date descending", () => {
     return request(app)
@@ -91,7 +92,18 @@ describe("GET/api/articles?topic=mitch", () => {
   });
 });
 
-describe.only("/api/articles/:article_id", () => {
+describe("GET/api/articles?topic=banana", () => {
+  test("200: return all the articles with topic mitch sort by date descending", () => {
+    return request(app)
+      .get("/api/articles?topic=banana")
+      .expect(400)
+      .then(({ body: article }) => {
+        expect(article.msg).toBe("Query not valid");
+      });
+  });
+});
+
+describe("/api/articles/:article_id", () => {
     
   describe("GET/api/articles/:article_id", () => {
       test("200: return article with comment_count", () => {
