@@ -44,8 +44,8 @@ exports.fetchCommentsById = (id) => {
 exports.addNewComment = (id, newComment) => {
   return db
     .query(
-      `INSERT INTO comments (author, body, article_id) VALUES ($1,$2,$3)`,
-      [newComment.username, newComment.body, id]
+      `INSERT INTO comments (article_id, author, body) VALUES ($1, $2, $3) RETURNING *`,
+      [id, newComment.username, newComment.body]
     )
     .then(({ rows: [comment] }) => {
       return comment;

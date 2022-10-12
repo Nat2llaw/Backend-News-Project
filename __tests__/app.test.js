@@ -167,21 +167,35 @@ describe("/api/articles/:article_id/comments", () => {
         });
     });
   });
-  // describe(" POST/api/articles/:article_id/comments", () => {
-  //   test("200: return comments with relevent article id", () => {
-  //     return request(app)
-  //       .post("/api/articles/1/comments")
-  //       .send({ username: "Bob the Builder", body: "Can he fix it?" })
-  //       .expect(201)
-  //       .then(({ body: comments }) => {
-  //         expect(comments).toBe({
-  //           author: "Bob the Builder",
-  //           body: "Can he fix it?",
-  //           article_id: 1,
-  //         });
-  //       });
-  //   });
-  // });
+  describe(" POST/api/articles/:article_id/comments", () => {
+    test("201: create comment with relevent article id if username exists", () => {
+      return request(app)
+        .post("/api/articles/1/comments")
+        .send({ username: "rogersop", body: "Can he fix it?" })
+        .expect(201)
+        .then(({ body: comments }) => {
+          expect(comments).toEqual(
+            expect.objectContaining({
+              author: "rogersop",
+              body: "Can he fix it?",
+              article_id: 1,
+              comment_id: expect.any(Number),
+              created_at: expect.any(String),
+              votes: expect.any(Number)
+            })
+          )
+        });
+    });
+    test("400: throw error if username doesn't exist", () => {
+      return request(app)
+        .post("/api/articles/1/comments")
+        .send({ username: "bob the builder", body: "Can he fix it?" })
+        .expect(400)
+        .then(({ body: comments }) => {
+          expect(comments.msg).toEqual("Create Account to Comment");
+        });
+    });
+  });
 });
 describe("GET/api/articles?topic=mitch", () => {
   test("200: return all the articles with topic mitch sort by date descending", () => {
