@@ -19,6 +19,9 @@ app.patch("/api/articles/:article_id", patchVotes)
 
 app.get("/api/articles", getAllArticles);
 
+app.get("/api/articles?topic=mitch", getAllArticles);
+
+
 app.all("*", (req ,res) => {
   res.status(404).send({msg: "path not found"})
 })

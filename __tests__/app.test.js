@@ -48,7 +48,6 @@ describe("GET/api/articles", () => {
       .get("/api/articles")
       .expect(200)
       .then(({ body: article }) => {
-        console.log(article)
         expect(article).toHaveLength(25);
         article.forEach((article) => {
           expect(article).toEqual(
@@ -60,22 +59,46 @@ describe("GET/api/articles", () => {
               body: expect.any(String),
               created_at: expect.any(String),
               votes: expect.any(Number),
-              comment_count: expect.any(String),
+              comment_count: expect.any(Number),
             })
           );
         })   
       });
   });
 });
+describe("GET/api/articles?topic=mitch", () => {
+  test("200: return all the articles with topic mitch sort by date descending", () => {
+    return request(app)
+      .get("/api/articles?topic=mitch")
+      .expect(200)
+      .then(({ body: article }) => {
+        expect(article).toHaveLength(23);
+        article.forEach((article) => {
+          expect(article).toEqual(
+            expect.objectContaining({
+              article_id: expect.any(Number),
+              title: expect.any(String),
+              topic: expect.any(String),
+              author: expect.any(String),
+              body: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+              comment_count: expect.any(Number),
+            })
+          );
+        });
+      });
+  });
+});
 
-describe("/api/articles/:article_id", () => {
+describe.only("/api/articles/:article_id", () => {
     
   describe("GET/api/articles/:article_id", () => {
       test("200: return article with comment_count", () => {
         return request(app)
           .get("/api/articles/1")
           .expect(200)
-          .then(({ body: [ article ] }) => {
+          .then(({ body: article }) => {
             expect(article).toEqual({
               article_id: 1,
               title: "Living in the shadow of a great man",
@@ -84,7 +107,7 @@ describe("/api/articles/:article_id", () => {
               body: "I find this existence challenging",
               created_at: "2020-07-09T20:11:00.000Z",
               votes: 100,
-              comment_count: '11',
+              comment_count: 11,
             });
           });
       });
