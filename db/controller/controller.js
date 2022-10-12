@@ -3,6 +3,7 @@ const {
   fetchArcticlesById,
   fetchUsers,
   updateVotes,
+  fetchAllArticles,
 } = require("../model/model");
 
 exports.getTopics = (req, res, next) => {
@@ -20,7 +21,6 @@ exports.getArticlesById = (req, res, next) => {
   fetchArcticlesById(id)
     .then((article) => {
       res.status(200).send(article);
-
     })
     .catch((err) => {
       next(err);

@@ -4,6 +4,7 @@ const {
   getArticlesById,
   getUsers,
   patchVotes,
+  getAllArticles,
 } = require("./db/controller/controller");
 const app = express();
 app.use(express.json());
