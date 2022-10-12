@@ -10,7 +10,7 @@ exports.fetchArcticlesById = (id) => {
   return (
     db
       .query(
-        `SELECT articles.*, (SELECT COUNT(*)
+        `SELECT articles.*, (SELECT COUNT(*)::int
             FROM comments WHERE article_id=$1) AS comment_count
             FROM articles
             LEFT JOIN comments ON articles.article_id=comments.article_id WHERE articles.article_id=$1`,
