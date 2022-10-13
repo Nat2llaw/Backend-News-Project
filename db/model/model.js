@@ -59,6 +59,15 @@ exports.addNewComment = (id, newComment) => {
     });
 };
 
+exports.deletingComment = (commentToRemove) => {
+  return db
+    .query(`DELETE FROM comments WHERE comment_id=$1 RETURNING *`, [commentToRemove]
+  )
+    .then(({ rows: deleted }) => {
+    return deleted
+  })
+}
+
 exports.fetchAllArticles = (topicQuery, sortByQuery, orderQuery) => {
   if (topicQuery) {
     return db

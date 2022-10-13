@@ -291,6 +291,17 @@ describe("/api/articles/:article_id/comments", () => {
   });
 });
 
+describe('DELETE/api/comments/:comment_id', () => {
+  test("204: delete comment and return no content", () => {
+    return request(app)
+      .delete("/api/comments/1")
+      .expect(204)
+      .then(({ body: deletedComment }) => {
+        expect(deletedComment).toEqual({})
+      })
+  })
+})
+
 describe("GET/api/users/", () => {
   test("200: return users", () => {
     return request(app)
