@@ -67,40 +67,67 @@ describe("GET/api/articles?topic", () => {
         });
       });
   });
-  test("400: return error for invalid query", () => {
+  test("404: return error for invalid query", () => {
     return request(app)
       .get("/api/articles?topic=banana")
-      .expect(400)
+      .expect(404)
       .then(({ body: article }) => {
         expect(article.msg).toBe("Query not valid");
       });
   });
 });
-// describe("GET/api/articles?sort_by", () => {
-//   test("200: return all the articles with authors in descending order", () => {
-//     return request(app)
-//       .get("/api/articles?sort_by=author")
-//       .expect(200)
-//       .then(({ body: article }) => {
-//         console.log(article)
-//         expect(article).toHaveLength(12);
-//         expect(article).toBeSortedBy("author", {
-//           descending: true,
-//         });
-//       });
-//   });
-//   test("400: return error for invalid query", () => {
-//     return request(app)
-//       .get("/api/articles?sort_by=banana")
-//       .expect(400)
-//       .then(({ body: article }) => {
-//         console.log(article);
-//         expect(article.msg).toBe("Query not valid");
-//       });
-//   });
-// });
 
-  
+describe("GET/api/articles?sort_by", () => {
+  test("200: return all the articles with authors in descending order", () => {
+    return request(app)
+      .get("/api/articles?sort_by=author")
+      .expect(200)
+      .then(({ body: article }) => {
+        expect(article).toHaveLength(12);
+        expect(article).toBeSortedBy("author", {
+          descending: true,
+        });
+      });
+  });
+  test("200: return all the articles with authors in descending order", () => {
+    return request(app)
+      .get("/api/articles?sort_by=author&order=asc")
+      .expect(200)
+      .then(({ body: article }) => {
+        expect(article).toHaveLength(12);
+        expect(article).toBeSortedBy("author", {
+          descending: false,
+        });
+      });
+  });
+  test("200: return all the articles with dates in ascending order", () => {
+    return request(app)
+      .get("/api/articles?order=asc")
+      .expect(200)
+      .then(({ body: article }) => {
+        expect(article).toHaveLength(12);
+        expect(article).toBeSortedBy("created_at", {
+          descending: false,
+        });
+      });
+  });
+  test("404: return error for invalid query", () => {
+    return request(app)
+      .get("/api/articles?sort_by=banana")
+      .expect(404)
+      .then(({ body: article }) => {
+        expect(article.msg).toBe("Invalid query");
+      });
+  });
+  test("400: return error for invalid type", () => {
+    return request(app)
+      .get("/api/articles?sort_by=123213")
+      .expect(400)
+      .then(({ body: article }) => {
+        expect(article.msg).toBe("Invalid query type");
+      });
+  });
+});
 
 describe("/api/articles/:article_id", () => {
   describe("GET/api/articles/:article_id", () => {
@@ -121,12 +148,20 @@ describe("/api/articles/:article_id", () => {
           });
         });
     });
-    test("400: return error", () => {
+    test("404: return error non-existant article_id", () => {
       return request(app)
         .get("/api/articles/1123123/comments")
-        .expect(400)
+        .expect(404)
         .then(({ body: comments }) => {
           expect(comments.msg).toBe("Id not found");
+        });
+    });
+    test("400: return error wrong type", () => {
+      return request(app)
+        .get("/api/articles/nathanielwashere/comments")
+        .expect(400)
+        .then(({ body: comments }) => {
+          expect(comments.msg).toBe("Bad Request");
         });
     });
     describe("PATCH/api/articles/:article_id", () => {
@@ -160,7 +195,7 @@ describe("/api/articles/:article_id", () => {
     test("400: article id not in database", () => {
       return request(app)
         .get("/api/articles/1123")
-        .expect(400)
+        .expect(404)
         .then(({ body }) => {
           expect(body.msg).toBe("Id not found");
         });
@@ -217,13 +252,40 @@ describe("/api/articles/:article_id/comments", () => {
           )
         });
     });
-    test("400: throw error if username doesn't exist", () => {
+    test("404: throw error if username doesn't exist", () => {
       return request(app)
         .post("/api/articles/1/comments")
         .send({ username: "bob the builder", body: "Can he fix it?" })
+        .expect(404)
+        .then(({ body: comments }) => {
+          expect(comments.msg).toEqual("not found");
+        });
+    });
+    test("404: throw error for invalid id", () => {
+      return request(app)
+        .post("/api/articles/12134/comments")
+        .send({ username: "rogersop", body: "Yes he can" })
+        .expect(404)
+        .then(({ body: comments }) => {
+          expect(comments.msg).toEqual("not found");
+        });
+    });
+    test("400: missing body", () => {
+      return request(app)
+        .post("/api/articles/1/comments")
+        .send({ username: "rogersop" })
         .expect(400)
         .then(({ body: comments }) => {
-          expect(comments.msg).toEqual("Create an account to comment");
+          expect(comments.msg).toEqual("no body");
+        });
+    });
+    test("400: missing username", () => {
+      return request(app)
+        .post("/api/articles/1/comments")
+        .send({ body: "missing a leg" })
+        .expect(400)
+        .then(({ body: comments }) => {
+          expect(comments.msg).toEqual("no username");
         });
     });
   });
@@ -250,7 +312,7 @@ describe("GET/api/users/", () => {
   test("400: article id not in database", () => {
     return request(app)
       .get("/api/articles/1123")
-      .expect(400)
+      .expect(404)
       .then(({ body: article }) => {
         expect(article).toEqual({ msg: "Id not found" });
       });

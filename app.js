@@ -5,10 +5,8 @@ const {
   getUsers,
   patchVotes,
   getAllArticles,
-  getCommentsById,
+  getCommentsByArticleId,
   postComment,
-  getAllArticlesByTopic,
-  getAllArticlesBySorting,
 } = require("./db/controller/controller");
 const app = express();
 app.use(express.json());
@@ -19,7 +17,7 @@ app.get("/api/users", getUsers);
 
 app.get("/api/articles/:article_id", getArticlesById);
 
-app.get("/api/articles/:article_id/comments", getCommentsById);
+app.get("/api/articles/:article_id/comments", getCommentsByArticleId);
 
 app.post("/api/articles/:article_id/comments", postComment);
 
@@ -41,7 +39,11 @@ app.use((err, req, res, next) => {
   } else if (err.code === "22P02") {
     res.status(400).send({ msg: "Bad Request" });
   } else if (err.code === "23503") {
-    res.status(400).send({ msg: "Create an account to comment" });
+    res.status(404).send({ msg: "not found" });
+  } else if (err.code === "42703") {
+    res.status(404).send({ msg: "Invalid query" })
+  } else if (err.code === "42P10") {
+    res.status(400).send({ msg: "Invalid query type"})
   } else {
     console.log(err);
     res.status(500).send({ msg: "Something went wrong" });
