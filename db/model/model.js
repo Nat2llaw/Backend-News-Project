@@ -42,14 +42,26 @@ exports.fetchCommentsByArticleId = (id) => {
 };
 
 exports.addNewComment = (id, newComment) => {
+  const {username, body} = newComment
+  if (!body) {
+    return Promise.reject({status: 400, msg: "no body"})
+  }
+  if (!username) {
+    return Promise.reject({ status: 400, msg: "no username" });
+  }
   return db
     .query(
       `INSERT INTO comments (article_id, author, body) VALUES ($1, $2, $3) RETURNING *`,
       [id, newComment.username, newComment.body]
     )
     .then(({ rows: [comment] }) => {
+      console.log(comment)
       return comment;
-    });
+    })
+    .catch((err) => {
+      console.log(err)
+      return Promise.reject({ status: 404, msg: "not found" }); 
+    })
 };
 
 exports.fetchAllArticles = (topicQuery) => {

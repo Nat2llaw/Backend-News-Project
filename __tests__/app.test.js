@@ -174,15 +174,6 @@ describe("/api/articles/:article_id/comments", () => {
           });
         });
     });
-    test("400: throw error if username doesn't exist", () => {
-      return request(app)
-        .post("/api/articles/1/comments")
-        .send({ username: "bob the builder", body: "Can he fix it?" })
-        .expect(400)
-        .then(({ body: comments }) => {
-          expect(comments.msg).toEqual("Create an account to comment");
-        });
-    });  
   });
   describe(" POST/api/articles/:article_id/comments", () => {
     test("201: create comment with relevent article id if username exists", () => {
@@ -190,8 +181,8 @@ describe("/api/articles/:article_id/comments", () => {
         .post("/api/articles/1/comments")
         .send({ username: "rogersop", body: "Can he fix it?" })
         .expect(201)
-        .then(({ body: comments }) => {
-          expect(comments).toEqual(
+        .then(({ body: comment }) => {
+          expect(comment).toEqual(
             expect.objectContaining({
               author: "rogersop",
               body: "Can he fix it?",
@@ -203,13 +194,40 @@ describe("/api/articles/:article_id/comments", () => {
           )
         });
     });
-    test("400: throw error if username doesn't exist", () => {
+    test("404: throw error if username doesn't exist", () => {
       return request(app)
         .post("/api/articles/1/comments")
         .send({ username: "bob the builder", body: "Can he fix it?" })
+        .expect(404)
+        .then(({ body: comments }) => {
+          expect(comments.msg).toEqual("not found");
+        });
+    });
+    test("404: throw error for invalid id", () => {
+      return request(app)
+        .post("/api/articles/12134/comments")
+        .send({ username: "rogersop", body: "Yes he can"})
+        .expect(404)
+        .then(({ body: comments }) => {
+          expect(comments.msg).toEqual("not found");
+        });
+    });
+    test("400: missing body", () => {
+      return request(app)
+        .post("/api/articles/1/comments")
+        .send({ username: "rogersop"})
         .expect(400)
         .then(({ body: comments }) => {
-          expect(comments.msg).toEqual("Create an account to comment");
+          expect(comments.msg).toEqual("no body");
+        });
+    });
+    test("400: missing username", () => {
+      return request(app)
+        .post("/api/articles/1/comments")
+        .send({ body: "missing a leg" })
+        .expect(400)
+        .then(({ body: comments }) => {
+          expect(comments.msg).toEqual("no username");
         });
     });
   });
