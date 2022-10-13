@@ -300,6 +300,22 @@ describe('DELETE/api/comments/:comment_id', () => {
         expect(deletedComment).toEqual({})
       })
   })
+  test("404: invalid comment_id", () => {
+    return request(app)
+      .delete("/api/comments/1123123")
+      .expect(404)
+      .then(({ body: deletedComment }) => {
+        expect(deletedComment.msg).toEqual("no comment to delete");
+      });
+  });
+  test("400: invalid comment_id type", () => {
+    return request(app)
+      .delete("/api/comments/boom")
+      .expect(400)
+      .then(({ body: deletedComment }) => {
+        expect(deletedComment.msg).toEqual("Bad Request");
+      });
+  });
 })
 
 describe("GET/api/users/", () => {

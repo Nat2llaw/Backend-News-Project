@@ -57,8 +57,11 @@ exports.removeComment = (req, res, next) => {
   const commentToRemove = req.params.comment_id
   deletingComment(commentToRemove)
     .then((deletedComment) => {
-    res.status(204).send(deletedComment)
-  })
+      res.status(204).send(deletedComment);
+    })
+    .catch((err) => {
+      next(err);
+    });
 }
 
 exports.getAllArticles = (req, res, next) => {
