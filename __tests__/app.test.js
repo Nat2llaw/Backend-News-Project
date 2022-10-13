@@ -90,12 +90,20 @@ describe("/api/articles/:article_id", () => {
           });
         });
     });
-    test("400: return error", () => {
+    test("404: return error non-existant article_id", () => {
       return request(app)
         .get("/api/articles/1123123/comments")
-        .expect(400)
+        .expect(404)
         .then(({ body: comments }) => {
           expect(comments.msg).toBe("Id not found");
+        });
+    });
+    test("400: return error wrong type", () => {
+      return request(app)
+        .get("/api/articles/nathanielwashere/comments")
+        .expect(400)
+        .then(({ body: comments }) => {
+          expect(comments.msg).toBe("Bad Request");
         });
     });
     describe("PATCH/api/articles/:article_id", () => {
@@ -126,10 +134,10 @@ describe("/api/articles/:article_id", () => {
           });
       });
     });
-    test("400: article id not in database", () => {
+    test("404: article id not in database", () => {
       return request(app)
         .get("/api/articles/1123")
-        .expect(400)
+        .expect(404)
         .then(({ body }) => {
           expect(body.msg).toBe("Id not found");
         });
@@ -166,6 +174,15 @@ describe("/api/articles/:article_id/comments", () => {
           });
         });
     });
+    test("400: throw error if username doesn't exist", () => {
+      return request(app)
+        .post("/api/articles/1/comments")
+        .send({ username: "bob the builder", body: "Can he fix it?" })
+        .expect(400)
+        .then(({ body: comments }) => {
+          expect(comments.msg).toEqual("Create an account to comment");
+        });
+    });  
   });
   describe(" POST/api/articles/:article_id/comments", () => {
     test("201: create comment with relevent article id if username exists", () => {
@@ -220,10 +237,10 @@ describe("GET/api/articles?topic=mitch", () => {
         });
       });
   });
-  test("400: return error for invalid query", () => {
+  test("404: return error for invalid query", () => {
     return request(app)
       .get("/api/articles?topic=banana")
-      .expect(400)
+      .expect(404)
       .then(({ body: article }) => {
         expect(article.msg).toBe("Query not valid");
       });
@@ -251,7 +268,7 @@ describe("GET/api/users/", () => {
   test("400: article id not in database", () => {
     return request(app)
       .get("/api/articles/1123")
-      .expect(400)
+      .expect(404)
       .then(({ body: article }) => {
         expect(article).toEqual({ msg: "Id not found" });
       });

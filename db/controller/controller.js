@@ -4,7 +4,7 @@ const {
   fetchUsers,
   updateVotes,
   fetchAllArticles,
-  fetchCommentsById,
+  fetchCommentsByArticleId,
   addNewComment,
 } = require("../model/model");
 
@@ -29,11 +29,11 @@ exports.getArticlesById = (req, res, next) => {
     });
 };
 
-exports.getCommentsById = (req, res, next) => {
+exports.getCommentsByArticleId = (req, res, next) => {
   const id = req.params.article_id;
-  fetchCommentsById(id)
-    .then((article) => {
-      res.status(200).send(article);
+  fetchCommentsByArticleId(id)
+    .then((comments) => {
+      res.status(200).send(comments);
     })
     .catch((err) => {
       next(err);
