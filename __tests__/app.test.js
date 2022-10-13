@@ -172,6 +172,22 @@ describe("/api/articles/:article_id/comments", () => {
           });
         });
     });
+    test("404: article id not in database", () => {
+      return request(app)
+        .get("/api/articles/1123/comments")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Id not found");
+        });
+    });
+    test("400: wrong type of data", () => {
+      return request(app)
+        .get("/api/articles/banana/comments")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Bad Request");
+        });
+    });
   })
 })
 describe("GET/api/articles?topic=mitch", () => {
