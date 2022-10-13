@@ -6,6 +6,8 @@ const {
   fetchAllArticles,
   fetchCommentsById,
   addNewComment,
+  fetchAllArticlesByTopic,
+  fetchAllArticlesBySorting,
 } = require("../model/model");
 
 exports.getTopics = (req, res, next) => {
@@ -53,24 +55,17 @@ exports.postComment = (req, res, next) => {
 };
 
 exports.getAllArticles = (req, res, next) => {
-  fetchAllArticles().then((allArticles) => {
-    res.status(200).send(allArticles)
-  })
+  const topicQuery = req.query.topic;
+  const sortByQuery = req.query.sort_by;
+  const orderQuery = req.query.order || "DESC";
+  fetchAllArticles(topicQuery, sortByQuery, orderQuery)
+    .then((allArticles) => {
+      res.status(200).send(allArticles);
+    })
+    .catch((err) => {
+      next(err);
+    });
 }
-
-// exports.getAllArticlesBySort = (req, res, next) => {
-//   const topicQuery = req.query.topic || "undefined";
-//   const sortByQuery = req.query.sort_by || "created_at";
-//   const orderQuery = req.query.order || "DESC";
-//   fetchSortedAllArticles(topicQuery)
-//     .then((allArticles) => {
-//       console.log(allArticles);
-//       res.status(200).send(allArticles);
-//     })
-//     .catch((err) => {
-//       next(err);
-//     });
-// };
 
 exports.getUsers = (req, res, next) => {
   fetchUsers()

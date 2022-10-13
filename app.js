@@ -7,6 +7,8 @@ const {
   getAllArticles,
   getCommentsById,
   postComment,
+  getAllArticlesByTopic,
+  getAllArticlesBySorting,
 } = require("./db/controller/controller");
 const app = express();
 app.use(express.json());

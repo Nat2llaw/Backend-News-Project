@@ -48,41 +48,42 @@ describe("GET/api/articles", () => {
       .get("/api/articles")
       .expect(200)
       .then(({ body: article }) => {
-        console.log(article)
-        expect(article).toHaveLength(25);
+        expect(article).toHaveLength(12);
         expect(article).toBeSortedBy("created_at", {
           descending: true,
         });
       });
   });
 });
-// describe("GET/api/articles?", () => {
-//   test("200: return all the articles with topic mitch sort by date descending", () => {
-//     return request(app)
-//       .get("/api/articles?topic=mitch")
-//       .expect(200)
-//       .then(({ body: article }) => {
-//         expect(article).toHaveLength(23);
-//         expect(article).toBeSortedBy("created_at", {
-//           descending: true
-//         });
-//       });
-//   });
-//   test("400: return error for invalid query", () => {
-//     return request(app)
-//       .get("/api/articles?topic=banana")
-//       .expect(400)
-//       .then(({ body: article }) => {
-//         expect(article.msg).toBe("Query not valid");
-//       });
-//   });
+describe("GET/api/articles?topic", () => {
+  test("200: return all the articles with topic mitch sort by date descending", () => {
+    return request(app)
+      .get("/api/articles?topic=mitch")
+      .expect(200)
+      .then(({ body: article }) => {
+        expect(article).toHaveLength(11);
+        expect(article).toBeSortedBy("created_at", {
+          descending: true
+        });
+      });
+  });
+  test("400: return error for invalid query", () => {
+    return request(app)
+      .get("/api/articles?topic=banana")
+      .expect(400)
+      .then(({ body: article }) => {
+        expect(article.msg).toBe("Query not valid");
+      });
+  });
+});
+// describe("GET/api/articles?sort_by", () => {
 //   test("200: return all the articles with authors in descending order", () => {
 //     return request(app)
 //       .get("/api/articles?sort_by=author")
 //       .expect(200)
 //       .then(({ body: article }) => {
 //         console.log(article)
-//         expect(article).toHaveLength(25);
+//         expect(article).toHaveLength(12);
 //         expect(article).toBeSortedBy("author", {
 //           descending: true,
 //         });
@@ -93,6 +94,7 @@ describe("GET/api/articles", () => {
 //       .get("/api/articles?sort_by=banana")
 //       .expect(400)
 //       .then(({ body: article }) => {
+//         console.log(article);
 //         expect(article.msg).toBe("Query not valid");
 //       });
 //   });

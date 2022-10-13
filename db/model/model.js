@@ -10,7 +10,7 @@ exports.fetchTopics = () => {
 exports.fetchArcticlesById = (id) => {
   return db
     .query(
-      `SELECT articles.*, (SELECT COUNT(*)::INT
+      `SELECT DISTINCT articles.*, (SELECT COUNT(*)::INT
             FROM comments WHERE article_id=$1) AS comment_count
             FROM articles
             LEFT JOIN comments ON articles.article_id=comments.article_id WHERE articles.article_id=$1`,
@@ -52,38 +52,54 @@ exports.addNewComment = (id, newComment) => {
     });
 };
 
-exports.fetchAllArticles = () => {
-  return db
-    .query(
-      `SELECT articles.*, (SELECT COUNT(*)::INT
-        FROM comments WHERE articles.article_id=comments.article_id) AS comment_count
-        FROM articles
-        LEFT JOIN comments ON articles.article_id=comments.article_id
-        ORDER BY created_at DESC`
-    )
-    .then(({ rows }) => {
-      return rows;
-    });
+exports.fetchAllArticles = (topicQuery, sortByQuery, orderQuery) => {
+  if (topicQuery === undefined) {
+    return db
+      .query(
+        `SELECT DISTINCT articles.*, (SELECT COUNT(*)::INT
+            FROM comments WHERE articles.article_id=comments.article_id) AS comment_count
+            FROM articles
+            LEFT JOIN comments ON articles.article_id=comments.article_id
+            ORDER BY created_at ${orderQuery}`
+      )
+      .then(({ rows }) => {
+        return rows;
+      });
+  } else if (topicQuery !== undefined) {
+    return db
+      .query(
+        `SELECT DISTINCT articles.*, (SELECT COUNT(*)::INT
+          FROM comments WHERE articles.article_id=comments.article_id) AS comment_count
+          FROM articles
+          LEFT JOIN comments ON articles.article_id=comments.article_id
+          WHERE articles.topic=$1
+          ORDER BY created_at DESC`,
+        [topicQuery]
+      )
+      .then(({ rows }) => {
+        if (rows.length === 0) {
+          return Promise.reject({ status: 400, msg: "Query not valid" });
+        }
+        return rows;
+      });
+  }
+  // } else if (sortByQuery !== undefined) {
+  //   return db
+  //     .query(
+  //       `SELECT DISTINCT articles.*, (SELECT COUNT(*)::INT
+  //         FROM comments WHERE articles.article_id=comments.article_id) AS comment_count
+  //         FROM articles
+  //         LEFT JOIN comments ON articles.article_id=comments.article_id
+  //         ORDER BY ${sortByQuery} DESC`
+  //     )
+  //     .then(({ rows }) => {
+  //       if (rows.length === 0) {
+  //         return Promise.reject({ status: 400, msg: "Query not valid" });
+  //       }
+  //       return rows;
+  //     });
+  // }
 };
-
-// exports.fetchSortedAllArticles = () => {
-//   return db
-//     .query(
-//       `SELECT articles.*, (SELECT COUNT(*)::INT
-//           FROM comments WHERE articles.article_id=comments.article_id) AS comment_count
-//           FROM articles
-//           LEFT JOIN comments ON articles.article_id=comments.article_id
-//           WHERE articles.topic=$1
-//           ORDER BY created_at DESC`,
-//       [topicQuery]
-//     )
-//     .then(({ rows }) => {
-//       if (rows.length === 0) {
-//         return Promise.reject({ status: 400, msg: "Query not valid" });
-//       }
-//       return rows;
-//     });
-// };
 
 exports.fetchUsers = () => {
   return db.query(`SELECT * FROM users`).then(({ rows }) => {
