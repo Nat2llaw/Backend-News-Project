@@ -87,14 +87,22 @@ describe("/api/articles/:article_id", () => {
           });
         });
     });
-    test("400: return error", () => {
+    test("404: return error non-existant article_id", () => {
       return request(app)
         .get("/api/articles/1123123/comments")
-        .expect(400)
+        .expect(404)
         .then(({ body: comments }) => {
           expect(comments.msg).toBe("Id not found");
         });
     });
+     test("400: return error wrong type", () => {
+       return request(app)
+         .get("/api/articles/nathanielwashere/comments")
+         .expect(400)
+         .then(({ body: comments }) => {
+           expect(comments.msg).toBe("Bad Request");
+         });
+     });
     describe("PATCH/api/articles/:article_id", () => {
       test("200: return article by id with increased vote value", () => {
         return request(app)
@@ -123,10 +131,10 @@ describe("/api/articles/:article_id", () => {
           });
       });
     });
-    test("400: article id not in database", () => {
+    test("404: article id not in database", () => {
       return request(app)
         .get("/api/articles/1123")
-        .expect(400)
+        .expect(404)
         .then(({ body }) => {
           expect(body.msg).toBe("Id not found");
         });
@@ -188,10 +196,10 @@ describe("GET/api/articles?topic=mitch", () => {
         });
       });
   });
-  test("400: return error for invalid query", () => {
+  test("404: return error for invalid query", () => {
     return request(app)
       .get("/api/articles?topic=banana")
-      .expect(400)
+      .expect(404)
       .then(({ body: article }) => {
         expect(article.msg).toBe("Query not valid");
       });
@@ -216,10 +224,10 @@ describe("GET/api/users/", () => {
         });
       });
   });
-  test("400: article id not in database", () => {
+  test("404: article id not in database", () => {
     return request(app)
       .get("/api/articles/1123")
-      .expect(400)
+      .expect(404)
       .then(({ body: article }) => {
         expect(article).toEqual({ msg: "Id not found" });
       });

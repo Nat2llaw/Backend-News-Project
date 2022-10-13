@@ -18,13 +18,13 @@ exports.fetchArcticlesById = (id) => {
     )
     .then(({ rows: [rows] }) => {
       if (rows === undefined) {
-        return Promise.reject({ status: 400, msg: "Id not found" });
+        return Promise.reject({ status: 404, msg: "Id not found" });
       }
       return rows;
     });
 };
 
-exports.fetchCommentsById = (id) => {
+exports.fetchCommentsByArticleId = (id) => {
   return db
     .query(
       `SELECT *
@@ -33,9 +33,10 @@ exports.fetchCommentsById = (id) => {
       ORDER BY created_at DESC`,
       [id]
     )
-    .then(( {rows} ) => {
-      if (rows.length === 0) {
-        return Promise.reject({ status: 400, msg: "Id not found" });
+    .then(({ rows }) => {
+      const comment = rows[0];
+      if (!comment) {
+        return Promise.reject({ status: 404, msg: 'Id not found'})
       }
       return rows;
     });
@@ -77,7 +78,7 @@ exports.fetchAllArticles = (topicQuery) => {
       )
       .then(({ rows }) => {
         if (rows.length === 0) {
-          return Promise.reject({ status: 400, msg: "Query not valid" });
+          return Promise.reject({ status: 404, msg: "Query not valid" });
         }
         return rows;
       });
