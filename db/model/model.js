@@ -55,11 +55,9 @@ exports.addNewComment = (id, newComment) => {
       [id, newComment.username, newComment.body]
     )
     .then(({ rows: [comment] }) => {
-      console.log(comment)
       return comment;
     })
     .catch((err) => {
-      console.log(err)
       return Promise.reject({ status: 404, msg: "not found" }); 
     })
 };
