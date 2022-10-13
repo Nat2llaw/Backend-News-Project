@@ -18,7 +18,6 @@ describe("GET/api/topics", () => {
       .get("/api/topics")
       .expect(200)
       .then(({ body: topics }) => {
-        console.log(topics)
         expect(topics).toHaveLength(3);
         topics.forEach((topics) => {
           expect(topics).toEqual(
