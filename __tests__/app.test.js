@@ -232,6 +232,14 @@ describe("/api/articles/:article_id/comments", () => {
           });
         });
     });
+    test("200: return empty comments if article id exists but has no comments", () => {
+      return request(app)
+        .get("/api/articles/2/comments")
+        .expect(200)
+        .then(({ body: comments }) => {
+          expect(comments).toEqual([]);
+        });
+    });
   });
   describe(" POST/api/articles/:article_id/comments", () => {
     test("201: create comment with relevent article id if username exists", () => {
