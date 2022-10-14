@@ -10,7 +10,7 @@ exports.fetchTopics = () => {
 exports.fetchArcticlesById = (id) => {
   return db
     .query(
-      `SELECT articles.*, (SELECT COUNT(*)::INT
+      `SELECT DISTINCT articles.*, (SELECT COUNT(*)::INT
             FROM comments WHERE article_id=$1) AS comment_count
             FROM articles
             LEFT JOIN comments ON articles.article_id=comments.article_id WHERE articles.article_id=$1`,
@@ -42,13 +42,13 @@ exports.fetchCommentsByArticleId = (id) => {
 };
 
 exports.addNewComment = (id, newComment) => {
-  const {username, body} = newComment
+  const { username, body } = newComment;
   if (!body) {
-    return Promise.reject({status: 400, msg: "no body"})
+    return Promise.reject({ status: 400, msg: "no body" });
   }
   if (!username) {
     return Promise.reject({ status: 400, msg: "no username" });
-  }
+  }  
   return db
     .query(
       `INSERT INTO comments (article_id, author, body) VALUES ($1, $2, $3) RETURNING *`,
@@ -80,48 +80,37 @@ exports.fetchCommentsByArticleId = (id) => {
     });
 };
 
-exports.addNewComment = (id, newComment) => {
-  return db.query(
-    `INSERT INTO comments (author, body, article_id) VALUES ($1,$2,$3)`,
-    [newComment.username, newComment.body, id]
-  )
-    .then(({ rows: [comment] }) => {
-    return comment
-  })
-}
-
-exports.fetchAllArticles = (topicQuery) => {
-  if (topicQuery === undefined) {
+exports.fetchAllArticles = (topicQuery, sortByQuery, orderQuery) => {
+  if (topicQuery) {
     return db
       .query(
-        `SELECT articles.*, (SELECT COUNT(*)::INT
-            FROM comments WHERE articles.article_id=comments.article_id) AS comment_count
-            FROM articles
-            LEFT JOIN comments ON articles.article_id=comments.article_id
-            ORDER BY created_at DESC`
+        `SELECT DISTINCT articles.*, (SELECT COUNT(*)::INT
+          FROM comments WHERE articles.article_id=comments.article_id) AS comment_count
+          FROM articles
+          LEFT JOIN comments ON articles.article_id=comments.article_id
+          WHERE articles.topic=$1
+          ORDER BY ${sortByQuery} ${orderQuery}`, [topicQuery]
       )
       .then(({ rows }) => {
+        if (rows.length === 0) {
+          return Promise.reject({ status: 404, msg: "Invalid query" });
+        }
         return rows;
       });
   } else {
     return db
       .query(
-        `SELECT articles.*, (SELECT COUNT(*)::INT
-            FROM comments WHERE articles.article_id=comments.article_id) AS comment_count
-            FROM articles
-            LEFT JOIN comments ON articles.article_id=comments.article_id
-            WHERE articles.topic=$1
-            ORDER BY created_at DESC`,
-        [topicQuery]
+        `SELECT DISTINCT articles.*, (SELECT COUNT(*)::INT
+          FROM comments WHERE articles.article_id=comments.article_id) AS comment_count
+          FROM articles
+          LEFT JOIN comments ON articles.article_id=comments.article_id
+          ORDER BY ${sortByQuery} ${orderQuery}`
       )
       .then(({ rows }) => {
-        if (rows.length === 0) {
-          return Promise.reject({ status: 404, msg: "Query not valid" });
-        }
         return rows;
       });
   }
-};
+}
 
 exports.fetchUsers = () => {
   return db.query(`SELECT * FROM users`).then(({ rows }) => {

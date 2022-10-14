@@ -54,14 +54,16 @@ exports.postComment = (req, res, next) => {
 
 exports.getAllArticles = (req, res, next) => {
   const topicQuery = req.query.topic;
-  fetchAllArticles(topicQuery)
-    .then((all) => {
-      res.status(200).send(all);
+  const sortByQuery = req.query.sort_by || "created_at";
+  const orderQuery = req.query.order || "DESC";
+  fetchAllArticles(topicQuery, sortByQuery, orderQuery)
+    .then((allArticles) => {
+      res.status(200).send(allArticles);
     })
     .catch((err) => {
       next(err);
     });
-};
+}
 
 exports.getUsers = (req, res, next) => {
   fetchUsers()

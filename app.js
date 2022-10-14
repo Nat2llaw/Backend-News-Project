@@ -23,7 +23,9 @@ app.post("/api/articles/:article_id/comments", postComment);
 
 app.get("/api/articles", getAllArticles);
 
-app.get("/api/articles?topic=mitch", getAllArticles);
+app.get("/api/articles?topics=mitch", getAllArticles);
+
+app.get("/api/articles?sort_by=author&order=ASC", getAllArticles);
 
 app.patch("/api/articles/:article_id", patchVotes);
 
@@ -37,7 +39,13 @@ app.use((err, req, res, next) => {
   } else if (err.code === "22P02") {
     res.status(400).send({ msg: "Bad Request" });
   } else if (err.code === "23503") {
-    res.status(404).send({ msg: "Id not found" });
+    res.status(404).send({ msg: "not found" });
+  } else if (err.code === "42703") {
+    res.status(404).send({ msg: "Invalid query" })
+  } else if (err.code === "42P10") {
+    res.status(400).send({ msg: "Invalid query type" });
+  } else if (err.code === "42601") {
+    res.status(400).send({ msg: "Invalid order query" });
   } else {
     console.log(err);
     res.status(500).send({ msg: "Something went wrong" });

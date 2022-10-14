@@ -43,30 +43,115 @@ describe("check for correct pathing", () => {
 });
 
 describe("GET/api/articles", () => {
-  test("200: return all the articles sort by date descending", () => {
+  test("200: return all the articles sorted by date descending by default", () => {
     return request(app)
       .get("/api/articles")
       .expect(200)
       .then(({ body: article }) => {
-        expect(article).toHaveLength(25);
+        expect(article).toHaveLength(12);
         expect(article).toBeSortedBy("created_at", {
           descending: true,
-          coerce: true,
         });
-        article.forEach((article) => {
-          expect(article).toEqual(
-            expect.objectContaining({
-              article_id: expect.any(Number),
-              title: expect.any(String),
-              topic: expect.any(String),
-              author: expect.any(String),
-              body: expect.any(String),
-              created_at: expect.any(String),
-              votes: expect.any(Number),
-              comment_count: expect.any(Number),
-            })
-          );
+      });
+  });
+});
+describe("GET/api/articles?topic", () => {
+  test("200: return all the articles with topic mitch sort by date descending", () => {
+    return request(app)
+      .get("/api/articles?topic=mitch")
+      .expect(200)
+      .then(({ body: article }) => {
+        expect(article).toHaveLength(11);
+        expect(article).toBeSortedBy("created_at", {
+          descending: true
         });
+      });
+  });
+  test("200: return all the articles with topic mitch sort by author ascending", () => {
+    return request(app)
+      .get("/api/articles?topic=mitch&sort_by=author&order=asc")
+      .expect(200)
+      .then(({ body: article }) => {
+        expect(article).toHaveLength(11);
+        expect(article).toBeSortedBy("author", {
+          descending: false,
+        });
+      });
+  });
+  test("404: return error for invalid query", () => {
+    return request(app)
+      .get("/api/articles?topic=banana")
+      .expect(404)
+      .then(({ body: article }) => {
+        expect(article.msg).toBe("Invalid query");
+      });
+  });
+});
+
+describe("GET/api/articles?sort_by", () => {
+  test("200: return all the articles with authors in descending order", () => {
+    return request(app)
+      .get("/api/articles?sort_by=author")
+      .expect(200)
+      .then(({ body: article }) => {
+        expect(article).toHaveLength(12);
+        expect(article).toBeSortedBy("author", {
+          descending: true,
+        });
+      });
+  });
+  test("200: return all the articles with authors in ascending order", () => {
+    return request(app)
+      .get("/api/articles?sort_by=author&order=asc")
+      .expect(200)
+      .then(({ body: article }) => {
+        expect(article).toHaveLength(12);
+        expect(article).toBeSortedBy("author", {
+          descending: false,
+        });
+      });
+  });
+  test("200: return all the articles with dates in ascending order", () => {
+    return request(app)
+      .get("/api/articles?order=asc")
+      .expect(200)
+      .then(({ body: article }) => {
+        expect(article).toHaveLength(12);
+        expect(article).toBeSortedBy("created_at", {
+          descending: false,
+        });
+      });
+  });
+  test("404: return error for invalid sort by query", () => {
+    return request(app)
+      .get("/api/articles?sort_by=banana")
+      .expect(404)
+      .then(({ body: article }) => {
+        expect(article.msg).toBe("Invalid query");
+      });
+  });
+  test("400: return error for invalid sort by type", () => {
+    return request(app)
+      .get("/api/articles?sort_by=123213")
+      .expect(400)
+      .then(({ body: article }) => {
+        expect(article.msg).toBe("Invalid query type");
+      });
+  });
+  test("400: return error for invalid order query", () => {
+    return request(app)
+      .get("/api/articles?order=banana")
+      .expect(400)
+      .then(({ body: article }) => {
+        expect(article.msg).toBe("Invalid order query");
+      });
+  });
+  test("400: return error for invalid type", () => {
+    return request(app)
+      .get("/api/articles?order=123213")
+      .expect(400)
+      .then(({ body: article }) => {
+        expect(article.msg).toBe("Invalid order query");
       });
   });
 });
@@ -206,7 +291,7 @@ describe("/api/articles/:article_id/comments", () => {
     test("404: throw error for invalid id", () => {
       return request(app)
         .post("/api/articles/12134/comments")
-        .send({ username: "rogersop", body: "Yes he can"})
+        .send({ username: "rogersop", body: "Yes he can" })
         .expect(404)
         .then(({ body: comments }) => {
           expect(comments.msg).toEqual("not found");
@@ -215,7 +300,7 @@ describe("/api/articles/:article_id/comments", () => {
     test("400: missing body", () => {
       return request(app)
         .post("/api/articles/1/comments")
-        .send({ username: "rogersop"})
+        .send({ username: "rogersop" })
         .expect(400)
         .then(({ body: comments }) => {
           expect(comments.msg).toEqual("no body");
@@ -230,39 +315,14 @@ describe("/api/articles/:article_id/comments", () => {
           expect(comments.msg).toEqual("no username");
         });
     });
-  });
-});
-describe("GET/api/articles?topic=mitch", () => {
-  test("200: return all the articles with topic mitch sort by date descending", () => {
-    return request(app)
-      .get("/api/articles?topic=mitch")
-      .expect(200)
-      .then(({ body: article }) => {
-        expect(article).toHaveLength(23);
-        article.forEach((article) => {
-          expect(article).toEqual(
-            expect.objectContaining({
-              article_id: expect.any(Number),
-              title: expect.any(String),
-              topic: expect.any(String),
-              author: expect.any(String),
-              body: expect.any(String),
-              created_at: expect.any(String),
-              votes: expect.any(Number),
-              comment_count: expect.any(Number),
-            })
-          );
+    test("404: return error for invalid query", () => {
+      return request(app)
+        .get("/api/articles?topic=banana")
+        .expect(404)
+        .then(({ body: article }) => {
+          expect(article.msg).toBe("Query not valid");
         });
-      });
-  });
-  test("404: return error for invalid query", () => {
-    return request(app)
-      .get("/api/articles?topic=banana")
-      .expect(404)
-      .then(({ body: article }) => {
-        expect(article.msg).toBe("Query not valid");
-      });
-  });
+    });
 });
 
 describe("GET/api/users/", () => {
