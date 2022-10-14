@@ -62,6 +62,34 @@ exports.addNewComment = (id, newComment) => {
     })
 };
 
+exports.fetchCommentsByArticleId = (id) => {
+  return db
+    .query(
+      `SELECT *
+      FROM comments
+      WHERE article_id=$1
+      ORDER BY created_at DESC`,
+      [id]
+    )
+    .then(({ rows }) => {
+      const comment = rows[0];
+      if (!comment) {
+        return Promise.reject({ status: 404, msg: 'Id not found'})
+      }
+      return rows;
+    });
+};
+
+exports.addNewComment = (id, newComment) => {
+  return db.query(
+    `INSERT INTO comments (author, body, article_id) VALUES ($1,$2,$3)`,
+    [newComment.username, newComment.body, id]
+  )
+    .then(({ rows: [comment] }) => {
+    return comment
+  })
+}
+
 exports.fetchAllArticles = (topicQuery) => {
   if (topicQuery === undefined) {
     return db
