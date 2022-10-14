@@ -35,8 +35,14 @@ exports.fetchCommentsByArticleId = (id) => {
       [id]
     )
     .then(({ rows }) => {
+      exports.fetchArcticlesById(id)
+        .then((article) => {
+          if (article.comment_count === 0) {
+            return rows
+          }
+        })
       return rows
-    });
+    })
 };
 
 exports.addNewComment = (id, newComment) => {

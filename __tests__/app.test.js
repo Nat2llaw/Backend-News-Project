@@ -175,14 +175,14 @@ describe("/api/articles/:article_id", () => {
           });
         });
     });
-    test("404: return error non-existant article_id", () => {
-      return request(app)
-        .get("/api/articles/1123123/comments")
-        .expect(404)
-        .then(({ body: comments }) => {
-          expect(comments.msg).toBe("Id not found");
-        });
-    });
+    // test("404: return error non-existant article_id", () => {
+    //   return request(app)
+    //     .get("/api/articles/1123123/comments")
+    //     .expect(404)
+    //     .then(({ body: comments }) => {
+    //       expect(comments.msg).toBe("Id not found");
+    //     });
+    // });
     test("400: return error wrong type", () => {
       return request(app)
         .get("/api/articles/nathanielwashere/comments")
@@ -240,7 +240,7 @@ describe("/api/articles/:article_id", () => {
 
 describe("/api/articles/:article_id/comments", () => {
   describe("GET/api/articles/:article_id/comments", () => {
-    test.only("200: return comments with relevent article id", () => {
+    test("200: return comments with relevent article id", () => {
       return request(app)
         .get("/api/articles/1/comments")
         .expect(200)
@@ -259,7 +259,7 @@ describe("/api/articles/:article_id/comments", () => {
           });
         });
     });
-    test.only("200: return empty comments if article id exists but has no comments", () => {
+    test("200: return empty comments if article id exists but has no comments", () => {
       return request(app)
         .get("/api/articles/2/comments")
         .expect(200)
