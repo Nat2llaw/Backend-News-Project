@@ -61,7 +61,6 @@ exports.addNewComment = (id, newComment) => {
 
 exports.fetchAllArticles = (topicQuery, sortByQuery, orderQuery) => {
   if (topicQuery) {
-    console.log(topicQuery)
     return db
       .query(
         `SELECT DISTINCT articles.*, (SELECT COUNT(*)::INT
