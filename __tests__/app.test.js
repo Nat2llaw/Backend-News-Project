@@ -240,7 +240,7 @@ describe("/api/articles/:article_id", () => {
 
 describe("/api/articles/:article_id/comments", () => {
   describe("GET/api/articles/:article_id/comments", () => {
-    test("200: return comments with relevent article id", () => {
+    test.only("200: return comments with relevent article id", () => {
       return request(app)
         .get("/api/articles/1/comments")
         .expect(200)
@@ -259,7 +259,7 @@ describe("/api/articles/:article_id/comments", () => {
           });
         });
     });
-    test("200: return empty comments if article id exists but has no comments", () => {
+    test.only("200: return empty comments if article id exists but has no comments", () => {
       return request(app)
         .get("/api/articles/2/comments")
         .expect(200)
@@ -328,10 +328,11 @@ describe("/api/articles/:article_id/comments", () => {
         .get("/api/articles?topic=banana")
         .expect(404)
         .then(({ body: article }) => {
-          expect(article.msg).toBe("Query not valid");
+          expect(article.msg).toBe("Invalid query");
         });
     });
-});
+  });
+})
 
 describe('DELETE/api/comments/:comment_id', () => {
   test("204: delete comment and return no content", () => {
@@ -386,4 +387,4 @@ describe("GET/api/users/", () => {
         expect(article).toEqual({ msg: "Id not found" });
       });
   });
-});
+})
