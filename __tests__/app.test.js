@@ -219,7 +219,7 @@ describe("/api/articles/:article_id", () => {
           });
       });
     });
-    test("400: article id not in database", () => {
+    test("404: article id not in database", () => {
       return request(app)
         .get("/api/articles/1123")
         .expect(404)
@@ -266,8 +266,8 @@ describe("/api/articles/:article_id/comments", () => {
         .post("/api/articles/1/comments")
         .send({ username: "rogersop", body: "Can he fix it?" })
         .expect(201)
-        .then(({ body: comments }) => {
-          expect(comments).toEqual(
+        .then(({ body: comment }) => {
+          expect(comment).toEqual(
             expect.objectContaining({
               author: "rogersop",
               body: "Can he fix it?",
@@ -315,7 +315,14 @@ describe("/api/articles/:article_id/comments", () => {
           expect(comments.msg).toEqual("no username");
         });
     });
-  });
+    test("404: return error for invalid query", () => {
+      return request(app)
+        .get("/api/articles?topic=banana")
+        .expect(404)
+        .then(({ body: article }) => {
+          expect(article.msg).toBe("Query not valid");
+        });
+    });
 });
 
 describe("GET/api/users/", () => {

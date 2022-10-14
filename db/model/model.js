@@ -56,6 +56,27 @@ exports.addNewComment = (id, newComment) => {
     )
     .then(({ rows: [comment] }) => {
       return comment;
+    })
+    .catch((err) => {
+      return Promise.reject({ status: 404, msg: "not found" }); 
+    })
+};
+
+exports.fetchCommentsByArticleId = (id) => {
+  return db
+    .query(
+      `SELECT *
+      FROM comments
+      WHERE article_id=$1
+      ORDER BY created_at DESC`,
+      [id]
+    )
+    .then(({ rows }) => {
+      const comment = rows[0];
+      if (!comment) {
+        return Promise.reject({ status: 404, msg: 'Id not found'})
+      }
+      return rows;
     });
 };
 
