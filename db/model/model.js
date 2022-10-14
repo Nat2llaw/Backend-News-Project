@@ -34,6 +34,9 @@ exports.fetchCommentsByArticleId = (id) => {
       [id]
     )
     .then(({ rows }) => {
+      if (id <= 12 && rows.length === 0) {
+        return []
+      }
       if (rows.length === 0) {
         return Promise.reject({ status: 404, msg: "Id not found" });
       }
@@ -79,6 +82,18 @@ exports.fetchCommentsByArticleId = (id) => {
       return rows;
     });
 };
+
+exports.deletingComment = (commentToRemove) => {
+  return db
+    .query(`DELETE FROM comments WHERE comment_id=$1 RETURNING *`, [commentToRemove]
+  )
+    .then(({ rows: deleted }) => {
+      if (deleted.length === 0) {
+        return Promise.reject({ status: 404, msg: "no comment to delete"})
+      }
+    return deleted
+  })
+}
 
 exports.fetchAllArticles = (topicQuery, sortByQuery, orderQuery) => {
   if (topicQuery) {

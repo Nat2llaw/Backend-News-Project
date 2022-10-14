@@ -259,6 +259,14 @@ describe("/api/articles/:article_id/comments", () => {
           });
         });
     });
+    test("200: return empty comments if article id exists but has no comments", () => {
+      return request(app)
+        .get("/api/articles/2/comments")
+        .expect(200)
+        .then(({ body: comments }) => {
+          expect(comments).toEqual([]);
+        });
+    });
   });
   describe(" POST/api/articles/:article_id/comments", () => {
     test("201: create comment with relevent article id if username exists", () => {
@@ -324,6 +332,33 @@ describe("/api/articles/:article_id/comments", () => {
         });
     });
 });
+
+describe('DELETE/api/comments/:comment_id', () => {
+  test("204: delete comment and return no content", () => {
+    return request(app)
+      .delete("/api/comments/1")
+      .expect(204)
+      .then(({ body: deletedComment }) => {
+        expect(deletedComment).toEqual({})
+      })
+  })
+  test("404: invalid comment_id", () => {
+    return request(app)
+      .delete("/api/comments/1123123")
+      .expect(404)
+      .then(({ body: deletedComment }) => {
+        expect(deletedComment.msg).toEqual("no comment to delete");
+      });
+  });
+  test("400: invalid comment_id type", () => {
+    return request(app)
+      .delete("/api/comments/boom")
+      .expect(400)
+      .then(({ body: deletedComment }) => {
+        expect(deletedComment.msg).toEqual("Bad Request");
+      });
+  });
+})
 
 describe("GET/api/users/", () => {
   test("200: return users", () => {
