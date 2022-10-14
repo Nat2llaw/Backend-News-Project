@@ -34,6 +34,44 @@ exports.fetchCommentsByArticleId = (id) => {
       [id]
     )
     .then(({ rows }) => {
+      if (rows.length === 0) {
+        return Promise.reject({ status: 404, msg: "Id not found" });
+      }
+      return rows;
+    });
+};
+
+exports.addNewComment = (id, newComment) => {
+  const {username, body} = newComment
+  if (!body) {
+    return Promise.reject({status: 400, msg: "no body"})
+  }
+  if (!username) {
+    return Promise.reject({ status: 400, msg: "no username" });
+  }
+  return db
+    .query(
+      `INSERT INTO comments (article_id, author, body) VALUES ($1, $2, $3) RETURNING *`,
+      [id, newComment.username, newComment.body]
+    )
+    .then(({ rows: [comment] }) => {
+      return comment;
+    })
+    .catch((err) => {
+      return Promise.reject({ status: 404, msg: "not found" }); 
+    })
+};
+
+exports.fetchCommentsByArticleId = (id) => {
+  return db
+    .query(
+      `SELECT *
+      FROM comments
+      WHERE article_id=$1
+      ORDER BY created_at DESC`,
+      [id]
+    )
+    .then(({ rows }) => {
       const comment = rows[0];
       if (!comment) {
         return Promise.reject({ status: 404, msg: 'Id not found'})

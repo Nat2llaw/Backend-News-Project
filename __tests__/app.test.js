@@ -49,7 +49,10 @@ describe("GET/api/articles", () => {
       .expect(200)
       .then(({ body: article }) => {
         expect(article).toHaveLength(25);
-        expect(article).toBeSortedBy('created_at', {descending: true, coerce: true})
+        expect(article).toBeSortedBy("created_at", {
+          descending: true,
+          coerce: true,
+        });
         article.forEach((article) => {
           expect(article).toEqual(
             expect.objectContaining({
@@ -95,14 +98,14 @@ describe("/api/articles/:article_id", () => {
           expect(comments.msg).toBe("Id not found");
         });
     });
-     test("400: return error wrong type", () => {
-       return request(app)
-         .get("/api/articles/nathanielwashere/comments")
-         .expect(400)
-         .then(({ body: comments }) => {
-           expect(comments.msg).toBe("Bad Request");
-         });
-     });
+    test("400: return error wrong type", () => {
+      return request(app)
+        .get("/api/articles/nathanielwashere/comments")
+        .expect(400)
+        .then(({ body: comments }) => {
+          expect(comments.msg).toBe("Bad Request");
+        });
+    });
     describe("PATCH/api/articles/:article_id", () => {
       test("200: return article by id with increased vote value", () => {
         return request(app)
@@ -171,24 +174,64 @@ describe("/api/articles/:article_id/comments", () => {
           });
         });
     });
-    test("404: article id not in database", () => {
+  });
+  describe(" POST/api/articles/:article_id/comments", () => {
+    test("201: create comment with relevent article id if username exists", () => {
       return request(app)
-        .get("/api/articles/1123/comments")
+        .post("/api/articles/1/comments")
+        .send({ username: "rogersop", body: "Can he fix it?" })
+        .expect(201)
+        .then(({ body: comment }) => {
+          expect(comment).toEqual(
+            expect.objectContaining({
+              author: "rogersop",
+              body: "Can he fix it?",
+              article_id: 1,
+              comment_id: expect.any(Number),
+              created_at: expect.any(String),
+              votes: expect.any(Number)
+            })
+          )
+        });
+    });
+    test("404: throw error if username doesn't exist", () => {
+      return request(app)
+        .post("/api/articles/1/comments")
+        .send({ username: "bob the builder", body: "Can he fix it?" })
         .expect(404)
-        .then(({ body }) => {
-          expect(body.msg).toBe("Id not found");
+        .then(({ body: comments }) => {
+          expect(comments.msg).toEqual("not found");
         });
     });
-    test("400: wrong type of data", () => {
+    test("404: throw error for invalid id", () => {
       return request(app)
-        .get("/api/articles/banana/comments")
-        .expect(400)
-        .then(({ body }) => {
-          expect(body.msg).toBe("Bad Request");
+        .post("/api/articles/12134/comments")
+        .send({ username: "rogersop", body: "Yes he can"})
+        .expect(404)
+        .then(({ body: comments }) => {
+          expect(comments.msg).toEqual("not found");
         });
     });
-  })
-})
+    test("400: missing body", () => {
+      return request(app)
+        .post("/api/articles/1/comments")
+        .send({ username: "rogersop"})
+        .expect(400)
+        .then(({ body: comments }) => {
+          expect(comments.msg).toEqual("no body");
+        });
+    });
+    test("400: missing username", () => {
+      return request(app)
+        .post("/api/articles/1/comments")
+        .send({ body: "missing a leg" })
+        .expect(400)
+        .then(({ body: comments }) => {
+          expect(comments.msg).toEqual("no username");
+        });
+    });
+  });
+});
 describe("GET/api/articles?topic=mitch", () => {
   test("200: return all the articles with topic mitch sort by date descending", () => {
     return request(app)
@@ -240,7 +283,7 @@ describe("GET/api/users/", () => {
         });
       });
   });
-  test("404: article id not in database", () => {
+  test("400: article id not in database", () => {
     return request(app)
       .get("/api/articles/1123")
       .expect(404)
