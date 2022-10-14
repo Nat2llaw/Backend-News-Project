@@ -67,12 +67,23 @@ describe("GET/api/articles?topic", () => {
         });
       });
   });
+  test("200: return all the articles with topic mitch sort by author ascending", () => {
+    return request(app)
+      .get("/api/articles?topic=mitch&sort_by=author&order=asc")
+      .expect(200)
+      .then(({ body: article }) => {
+        expect(article).toHaveLength(11);
+        expect(article).toBeSortedBy("author", {
+          descending: false,
+        });
+      });
+  });
   test("404: return error for invalid query", () => {
     return request(app)
       .get("/api/articles?topic=banana")
       .expect(404)
       .then(({ body: article }) => {
-        expect(article.msg).toBe("Query not valid");
+        expect(article.msg).toBe("Invalid query");
       });
   });
 });
@@ -89,7 +100,7 @@ describe("GET/api/articles?sort_by", () => {
         });
       });
   });
-  test("200: return all the articles with authors in descending order", () => {
+  test("200: return all the articles with authors in ascending order", () => {
     return request(app)
       .get("/api/articles?sort_by=author&order=asc")
       .expect(200)
@@ -111,7 +122,7 @@ describe("GET/api/articles?sort_by", () => {
         });
       });
   });
-  test("404: return error for invalid query", () => {
+  test("404: return error for invalid sort by query", () => {
     return request(app)
       .get("/api/articles?sort_by=banana")
       .expect(404)
@@ -119,12 +130,28 @@ describe("GET/api/articles?sort_by", () => {
         expect(article.msg).toBe("Invalid query");
       });
   });
-  test("400: return error for invalid type", () => {
+  test("400: return error for invalid sort by type", () => {
     return request(app)
       .get("/api/articles?sort_by=123213")
       .expect(400)
       .then(({ body: article }) => {
         expect(article.msg).toBe("Invalid query type");
+      });
+  });
+  test("400: return error for invalid order query", () => {
+    return request(app)
+      .get("/api/articles?order=banana")
+      .expect(400)
+      .then(({ body: article }) => {
+        expect(article.msg).toBe("Invalid order query");
+      });
+  });
+  test("400: return error for invalid type", () => {
+    return request(app)
+      .get("/api/articles?order=123213")
+      .expect(400)
+      .then(({ body: article }) => {
+        expect(article.msg).toBe("Invalid order query");
       });
   });
 });

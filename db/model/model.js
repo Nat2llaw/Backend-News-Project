@@ -61,6 +61,7 @@ exports.addNewComment = (id, newComment) => {
 
 exports.fetchAllArticles = (topicQuery, sortByQuery, orderQuery) => {
   if (topicQuery) {
+    console.log(topicQuery)
     return db
       .query(
         `SELECT DISTINCT articles.*, (SELECT COUNT(*)::INT
@@ -68,33 +69,15 @@ exports.fetchAllArticles = (topicQuery, sortByQuery, orderQuery) => {
           FROM articles
           LEFT JOIN comments ON articles.article_id=comments.article_id
           WHERE articles.topic=$1
-          ORDER BY created_at DESC`,
-        [topicQuery]
+          ORDER BY ${sortByQuery} ${orderQuery}`, [topicQuery]
       )
       .then(({ rows }) => {
         if (rows.length === 0) {
-          return Promise.reject({ status: 404, msg: "Query not valid" });
+          return Promise.reject({ status: 404, msg: "Invalid query" });
         }
         return rows;
       });
-  }
-  if (sortByQuery && !orderQuery) {
-    return db
-      .query(
-        `SELECT DISTINCT articles.*, (SELECT COUNT(*)::INT
-          FROM comments WHERE articles.article_id=comments.article_id) AS comment_count
-          FROM articles
-          LEFT JOIN comments ON articles.article_id=comments.article_id
-          ORDER BY ${sortByQuery} DESC`
-      )
-      .then(({ rows }) => {
-        if (rows.length === 0) {
-          return Promise.reject({ status: 404, msg: "Query not valid" });
-        }
-        return rows;
-      });
-  }
-  if (sortByQuery && orderQuery) {
+  } else {
     return db
       .query(
         `SELECT DISTINCT articles.*, (SELECT COUNT(*)::INT
@@ -107,30 +90,6 @@ exports.fetchAllArticles = (topicQuery, sortByQuery, orderQuery) => {
         return rows;
       });
   }
-  if (!sortByQuery && orderQuery) {
-    return db
-      .query(
-        `SELECT DISTINCT articles.*, (SELECT COUNT(*)::INT
-          FROM comments WHERE articles.article_id=comments.article_id) AS comment_count
-          FROM articles
-          LEFT JOIN comments ON articles.article_id=comments.article_id
-          ORDER BY created_at ${orderQuery}`
-      )
-      .then(({ rows }) => {
-        return rows;
-      });
-  }
-  return db
-    .query(
-      `SELECT DISTINCT articles.*, (SELECT COUNT(*)::INT
-          FROM comments WHERE articles.article_id=comments.article_id) AS comment_count
-          FROM articles
-          LEFT JOIN comments ON articles.article_id=comments.article_id
-          ORDER BY created_at DESC`
-    )
-    .then(({ rows }) => {
-      return rows;
-    });
 }
 
 exports.fetchUsers = () => {

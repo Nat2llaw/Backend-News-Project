@@ -43,7 +43,9 @@ app.use((err, req, res, next) => {
   } else if (err.code === "42703") {
     res.status(404).send({ msg: "Invalid query" })
   } else if (err.code === "42P10") {
-    res.status(400).send({ msg: "Invalid query type"})
+    res.status(400).send({ msg: "Invalid query type" });
+  } else if (err.code === "42601") {
+    res.status(400).send({ msg: "Invalid order query" });
   } else {
     console.log(err);
     res.status(500).send({ msg: "Something went wrong" });

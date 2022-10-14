@@ -54,8 +54,8 @@ exports.postComment = (req, res, next) => {
 
 exports.getAllArticles = (req, res, next) => {
   const topicQuery = req.query.topic;
-  const sortByQuery = req.query.sort_by;
-  const orderQuery = req.query.order;
+  const sortByQuery = req.query.sort_by || "created_at";
+  const orderQuery = req.query.order || "DESC";
   fetchAllArticles(topicQuery, sortByQuery, orderQuery)
     .then((allArticles) => {
       res.status(200).send(allArticles);
