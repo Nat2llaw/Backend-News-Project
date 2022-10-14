@@ -10,7 +10,6 @@ const {
   removeComment
 } = require("./db/controller/controller");
 const app = express();
-const listen = require("./listen")
 app.use(express.json());
 
 app.get("/api/topics", getTopics);
@@ -55,7 +54,5 @@ app.use((err, req, res, next) => {
     res.status(500).send({ msg: "Something went wrong" });
   }
 });
-
-listen
 
 module.exports = app;
