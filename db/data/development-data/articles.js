@@ -1,6 +1,8 @@
 module.exports = [
   {
     title: "Running a Node App",
+    img_URL:
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Node.js_logo.svg/1200px-Node.js_logo.svg.png",
     topic: "coding",
     author: "jessjelly",
     body: "This is part two of a series on how to get up and running with Systemd and Node.js. This part dives deeper into how to successfully run your app with systemd long-term, and how to set it up in a production environment.",
@@ -9,6 +11,8 @@ module.exports = [
   },
   {
     title: "The Rise Of Thinking Machines: How IBM's Watson Takes On The World",
+    img_URL:
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2gPkvQjkZroIB5K839jygfQ4ppjD9tWgBPA&usqp=CAU",
     topic: "coding",
     author: "jessjelly",
     body: "Many people know Watson as the IBM-developed cognitive super computer that won the Jeopardy! gameshow in 2011. In truth, Watson is not actually a computer but a set of algorithms and APIs, and since winning TV fame (and a $1 million prize) IBM has put it to use tackling tough problems in every industry from healthcare to finance. Most recently, IBM has announced several new partnerships which aim to take things even further, and put its cognitive capabilities to use solving a whole new range of problems around the world.",
