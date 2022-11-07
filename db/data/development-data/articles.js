@@ -1,8 +1,8 @@
-import node from "../../../images"
 module.exports = [
   {
     title: "Running a Node App",
-    img_url: node,
+    img_url:
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Node.js_logo.svg/1024px-Node.js_logo.svg.png",
     topic: "coding",
     author: "jessjelly",
     body: "This is part two of a series on how to get up and running with Systemd and Node.js. This part dives deeper into how to successfully run your app with systemd long-term, and how to set it up in a production environment.",
