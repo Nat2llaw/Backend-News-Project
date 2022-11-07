@@ -11,7 +11,7 @@ module.exports = [
   },
   {
     title: "The Rise Of Thinking Machines: How IBM's Watson Takes On The World",
-    img_URL:
+    img_url:
       "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2gPkvQjkZroIB5K839jygfQ4ppjD9tWgBPA&usqp=CAU",
     topic: "coding",
     author: "jessjelly",
