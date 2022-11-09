@@ -282,7 +282,7 @@ module.exports = [
   },
   {
     title:
-      "Twice-Baked Butternut Squash Is the Thanksgiving Side Dish of Your Dreams",
+      "Twice-Baked Butternut Squash Is the Thanksgiving Dish of Your Dreams",
     img_url: "https://static.onecms.io/wp-content/uploads/sites/44/2021/12/29/hasselback-butternut-squash-with-chile-and-garlic.jpg",
     topic: "cooking",
     author: "jessjelly",
