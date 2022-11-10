@@ -258,7 +258,7 @@ module.exports = [
     img_url: "https://insanelygoodrecipes.com/wp-content/uploads/2021/09/Homemade-Apple-and-Sangria-Cocktail-with-Figs.jpg",
     topic: "cooking",
     author: "grumpy19",
-    body: "Thanksgiving is a foodie’s favorite holiday. Mashed potatoes, cranberry sauce, stuffing, and last but not least, a juicy turkey. Don’t let your meticulous menu fall short of perfection; flavorful cocktails are just as important as the meal. Here are a few ideas that will fit into your festivities.",
+    body: "Thanksgiving is a foodie’s favorite holiday. Mashed potatoes, cranberry sauce, stuffing, and last but not least, a juicy turkey. Don’t let your meticulous menu fall short of perfection; flavorful cocktails are as important as the meal. Here are a few ideas that will fit into your festivities.",
     created_at: 1579908120000,
     votes: 0,
   },
