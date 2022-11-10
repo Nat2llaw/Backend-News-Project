@@ -291,7 +291,7 @@ module.exports = [
     votes: 0,
   },
   {
-    title: "What to Cook This Coming Week",
+    title: "What to Cook This Week",
     img_url: "https://themom100.com/wp-content/uploads/2019/08/one-skillet-beefy-enchilada-casserole-245.jpg",
     topic: "cooking",
     author: "tickle122",
