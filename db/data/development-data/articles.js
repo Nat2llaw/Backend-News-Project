@@ -240,7 +240,7 @@ module.exports = [
       "https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/main-butternut-squash-and-sweet-potato-soup-0062-portrait-pf-1574163651.jpg?crop=1.00xw:0.667xh;0,0.230xh&resize=480:*",
     topic: "cooking",
     author: "weegembump",
-    body: "Roast your vegetables in honey before blitzing into this velvety smooth, spiced soup - served with garlicky, zesty ciabatta slices for dipping",
+    body: "Roast your vegetables in honey before blitzing into this velvety smooth, spiced soup - served with garlicky, zesty ciabatta slices perfect for dipping",
     created_at: 1583961360000,
     votes: 0,
   },
